@@ -1,0 +1,90 @@
+[
+  {
+    "id": "arg",
+    "name": "Argentina",
+    "fifaCode": "ARG",
+    "confederation": "CONMEBOL",
+    "group": "A",
+    "strengthRating": 92,
+    "formIndex": 88,
+    "squadStrength": 91,
+    "lastFiveResults": ["W", "W", "D", "W", "W"]
+  },
+  {
+    "id": "jpn",
+    "name": "Japan",
+    "fifaCode": "JPN",
+    "confederation": "AFC",
+    "group": "A",
+    "strengthRating": 78,
+    "formIndex": 80,
+    "squadStrength": 77,
+    "lastFiveResults": ["W", "D", "W", "L", "W"]
+  },
+  {
+    "id": "usa",
+    "name": "United States",
+    "fifaCode": "USA",
+    "confederation": "CONCACAF",
+    "group": "A",
+    "strengthRating": 75,
+    "formIndex": 73,
+    "squadStrength": 74,
+    "lastFiveResults": ["D", "W", "L", "W", "D"]
+  },
+  {
+    "id": "sen",
+    "name": "Senegal",
+    "fifaCode": "SEN",
+    "confederation": "CAF",
+    "group": "A",
+    "strengthRating": 79,
+    "formIndex": 76,
+    "squadStrength": 78,
+    "lastFiveResults": ["W", "L", "W", "D", "W"]
+  },
+  {
+    "id": "fra",
+    "name": "France",
+    "fifaCode": "FRA",
+    "confederation": "UEFA",
+    "group": "B",
+    "strengthRating": 90,
+    "formIndex": 84,
+    "squadStrength": 89,
+    "lastFiveResults": ["W", "W", "L", "W", "D"]
+  },
+  {
+    "id": "mex",
+    "name": "Mexico",
+    "fifaCode": "MEX",
+    "confederation": "CONCACAF",
+    "group": "B",
+    "strengthRating": 74,
+    "formIndex": 71,
+    "squadStrength": 73,
+    "lastFiveResults": ["D", "W", "W", "L", "L"]
+  },
+  {
+    "id": "kor",
+    "name": "South Korea",
+    "fifaCode": "KOR",
+    "confederation": "AFC",
+    "group": "B",
+    "strengthRating": 76,
+    "formIndex": 74,
+    "squadStrength": 75,
+    "lastFiveResults": ["W", "L", "D", "W", "W"]
+  },
+  {
+    "id": "uru",
+    "name": "Uruguay",
+    "fifaCode": "URU",
+    "confederation": "CONMEBOL",
+    "group": "B",
+    "strengthRating": 84,
+    "formIndex": 81,
+    "squadStrength": 83,
+    "lastFiveResults": ["W", "W", "D", "L", "W"]
+  }
+]

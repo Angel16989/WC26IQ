@@ -1,0 +1,40 @@
+[
+  {
+    "id": "pred-a1",
+    "matchId": "a1",
+    "homeWinProbability": 0.63,
+    "drawProbability": 0.22,
+    "awayWinProbability": 0.15,
+    "expectedGoals": {
+      "home": 1.8,
+      "away": 0.8
+    },
+    "likelyScorers": [
+      "arg-alvarez",
+      "jpn-mitoma"
+    ],
+    "confidence": "medium",
+    "explanation": "Argentina's higher team-strength and recent-form profile drives the edge in this placeholder forecast.",
+    "modelVersion": "placeholder-v1",
+    "generatedAt": "2026-06-13T00:00:00Z"
+  },
+  {
+    "id": "pred-b1",
+    "matchId": "b1",
+    "homeWinProbability": 0.59,
+    "drawProbability": 0.24,
+    "awayWinProbability": 0.17,
+    "expectedGoals": {
+      "home": 1.7,
+      "away": 0.9
+    },
+    "likelyScorers": [
+      "fra-mbappe",
+      "mex-gimenez"
+    ],
+    "confidence": "medium",
+    "explanation": "France starts ahead on squad strength, but the result remains within normal tournament volatility.",
+    "modelVersion": "placeholder-v1",
+    "generatedAt": "2026-06-13T00:00:00Z"
+  }
+]
