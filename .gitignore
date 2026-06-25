@@ -18,3 +18,4 @@ __pycache__/
 *.pyd
 *.log
 
+scripts/windows/wciq_key

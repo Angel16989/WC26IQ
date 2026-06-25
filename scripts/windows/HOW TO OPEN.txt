@@ -1,0 +1,49 @@
+======================================================
+  WorldCupIQ — How to Open (Windows)
+  World Cup 2026 · Live Analytics & Predictions
+======================================================
+
+
+🌐 EASIEST — Just click this link:
+─────────────────────────────────────────────────────
+  https://deviation-pubs-fresh-leaves.trycloudflare.com
+
+  Works in any browser on any device. No install needed.
+  (If this link stops working, ask Rasik for the new one.)
+
+
+🖥️  WINDOWS LAUNCHER (offline-capable, faster):
+─────────────────────────────────────────────────────
+  1. Double-click:  "Open WorldCupIQ.bat"
+  2. Your browser opens automatically.
+
+  The launcher will try in this order:
+    ① Tailscale  (fastest, if you have it)
+    ② SSH tunnel (uses the included key file)
+    ③ Direct URL (always works as fallback)
+
+  First time only: the key file (wciq_key) is included
+  in this folder — no password needed!
+
+
+📱 TAILSCALE (best experience, permanent access):
+─────────────────────────────────────────────────────
+  1. Install Tailscale: https://tailscale.com/download
+  2. Ask Rasik to add you to the network.
+  3. Then just go to: http://100.75.101.89:3002
+
+
+🔑 SSH KEY (already included in this folder):
+─────────────────────────────────────────────────────
+  The file "wciq_key" in this folder is your access key.
+  The launcher uses it automatically — no password needed.
+  This key can ONLY forward the website port. Nothing else.
+
+
+🆕 If the share link changes:
+─────────────────────────────────────────────────────
+  Run: "Get-ShareLink.ps1"  (right-click → Run with PowerShell)
+  It will fetch the latest URL and copy it to your clipboard.
+
+
+======================================================
