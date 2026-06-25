@@ -1,12 +1,14 @@
 from typing import Literal
 
+from pydantic import Field
+
 from app.schemas.base import ApiModel
 from app.schemas.common import GroupTable, TeamProbability
 
 
 class TournamentSimulationRequest(ApiModel):
-    iterations: int = 1000
-    seed: int = 2026
+    iterations: int = Field(default=1000, ge=1, le=10_000)
+    seed: int = Field(default=2026, ge=0, le=2_147_483_647)
     startingStage: Literal[
         "group",
         "round_of_16",

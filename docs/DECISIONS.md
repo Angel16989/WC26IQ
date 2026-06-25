@@ -8,11 +8,11 @@
 - Use minimal Tailwind styling only to support simple placeholder layouts.
 - Keep the shared package TypeScript-only for now and mirror contracts manually in Pydantic.
 - Reserve `integrations/void` for future copied-in Void code without connecting it to runtime behavior.
+- Keep PostgreSQL optional behind `WORLDCUPIQ_DATABASE_URL` so local development and frontend work can continue without a running database.
+- Use the WorldCupIQ master formula as the backend prediction baseline, while clearly marking uncalibrated layers as pending.
 
 ## Deliberate Non-Decisions
 - No production deployment target yet.
-- No database wiring yet.
 - No full authentication yet.
 - No final frontend design yet.
-- No real predictive model claims yet.
-
+- No production-calibrated prediction claims yet.

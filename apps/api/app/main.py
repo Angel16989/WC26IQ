@@ -10,6 +10,8 @@ from app.routes.teams import router as teams_router
 
 settings = get_settings()
 
+_is_production = settings.environment == "production"
+
 app = FastAPI(
     title="WorldCupIQ API",
     version=settings.api_version,
@@ -17,14 +19,18 @@ app = FastAPI(
         "Provider-backed API scaffold for a 2026 FIFA World Cup analytics and "
         "prediction product."
     ),
+    # Disable interactive docs in production to avoid leaking schema details.
+    docs_url=None if _is_production else "/docs",
+    redoc_url=None if _is_production else "/redoc",
+    openapi_url=None if _is_production else "/openapi.json",
 )
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Accept"],
 )
 
 app.include_router(health_router)

@@ -12,6 +12,8 @@ if str(API_ROOT) not in sys.path:
 @pytest.fixture(autouse=True)
 def _force_mock_provider(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("WORLDCUPIQ_DATA_PROVIDER", "mock")
+    monkeypatch.delenv("WORLDCUPIQ_DATABASE_URL", raising=False)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
 
     from app.core.settings import get_settings
     from app.data.repository import get_data_bundle, get_fixtures, get_players, get_teams

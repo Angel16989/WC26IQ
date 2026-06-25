@@ -6,8 +6,8 @@ from pydantic import Field
 
 
 class MatchPredictionRequest(ApiModel):
-    homeTeamId: str
-    awayTeamId: str
+    homeTeamId: str = Field(min_length=1, max_length=64)
+    awayTeamId: str = Field(min_length=1, max_length=64)
     includeLikelyScorers: bool = True
     includeModelNotes: bool = True
 

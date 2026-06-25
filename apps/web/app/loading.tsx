@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="rounded-[28px] border border-dashed border-[var(--border)] bg-[var(--surface)] p-8 text-sm text-slate-600">
+    <div className="wc-panel wc-loading rounded-[28px] border-dashed p-8 text-sm">
       Loading placeholder content...
     </div>
   );

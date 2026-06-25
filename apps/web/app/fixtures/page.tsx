@@ -2,6 +2,7 @@ import type { Match, Team } from "@worldcupiq/shared";
 
 import { InfoCard } from "@/components/info-card";
 import { PageHero } from "@/components/page-hero";
+import { TeamMark } from "@/components/team-mark";
 import { apiClient } from "@/lib/api/client";
 
 function formatKickoff(value: string) {
@@ -33,21 +34,6 @@ function labelForStage(stage: Match["stage"]) {
   }
 }
 
-function labelForStatus(status: Match["status"]) {
-  switch (status) {
-    case "scheduled":
-      return "Scheduled";
-    case "live":
-      return "Live";
-    case "final":
-      return "Final";
-    case "postponed":
-      return "Postponed";
-    default:
-      return status;
-  }
-}
-
 function buildStageSummary(fixtures: Match[]) {
   const counts = new Map<Match["stage"], number>();
 
@@ -73,35 +59,31 @@ export default async function FixturesPage() {
   }
 
   const stageSummary = buildStageSummary(fixtures);
-  const liveFixtures = fixtures.filter((fixture) => fixture.status === "live").length;
-  const scheduledFixtures = fixtures.filter(
-    (fixture) => fixture.status === "scheduled",
-  ).length;
-  const teamNameById = new Map(teams.map((team) => [team.id, team.name]));
+  const teamById = new Map(teams.map((team) => [team.id, team]));
 
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow="Fixtures route"
-        title="Live fixture schedule from the backend API"
-        description="This page now reads directly from `/fixtures` and shows the active provider-backed tournament schedule. Stage, venue, kickoff time, and match status stay aligned with the shared match contract."
+        eyebrow="Fixtures"
+        title="Match schedule with clearer teams, stages, and venues"
+        description="The fixtures view now stays inside the same product shell and gives every matchup proper team identity, tournament context, and backend-backed scheduling data."
         aside={
-          <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)]">
-              Schedule Snapshot
-            </p>
+          <div className="wc-panel-muted rounded-3xl p-5">
+            <p className="wc-data-label text-xs font-semibold">Schedule Snapshot</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
               <div>
-                <p className="text-2xl font-semibold">{fixtures.length}</p>
-                <p className="text-sm text-slate-600">Fixtures returned</p>
+                <p className="wc-data-value text-2xl font-semibold">{fixtures.length}</p>
+                <p className="wc-body text-sm">Fixtures returned</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">{scheduledFixtures}</p>
-                <p className="text-sm text-slate-600">Scheduled fixtures</p>
+                <p className="wc-data-value text-2xl font-semibold">{stageSummary.length}</p>
+                <p className="wc-body text-sm">Stages represented</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold">{liveFixtures}</p>
-                <p className="text-sm text-slate-600">Live fixtures</p>
+                <p className="wc-data-value text-2xl font-semibold">
+                  {fixtures.filter((fixture) => fixture.stage === "group").length}
+                </p>
+                <p className="wc-body text-sm">Group-stage matches</p>
               </div>
             </div>
           </div>
@@ -110,82 +92,85 @@ export default async function FixturesPage() {
 
       {errorMessage ? (
         <InfoCard title="Live fixtures unavailable">
-          <p className="text-sm leading-7 text-slate-700">
-            {errorMessage} Check that the API is running at the configured base URL and
-            try again.
-          </p>
-        </InfoCard>
-      ) : null}
-
-      {!errorMessage && fixtures.length === 0 ? (
-        <InfoCard title="No fixtures returned">
-          <p className="text-sm leading-7 text-slate-700">
-            The API responded successfully but did not return any fixture data.
-          </p>
+          <p>{errorMessage} Check that the API is running at the configured base URL and try again.</p>
         </InfoCard>
       ) : null}
 
       {!errorMessage && fixtures.length > 0 ? (
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="grid gap-6 lg:grid-cols-[0.74fr_1.26fr]">
           <InfoCard title="Stage breakdown">
             <div className="space-y-3">
               {stageSummary.map(([stage, count]) => (
                 <div
                   key={stage}
-                  className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3"
+                  className="wc-panel-muted flex items-center justify-between rounded-2xl px-4 py-3"
                 >
                   <span>{labelForStage(stage)}</span>
-                  <span className="font-semibold">{count}</span>
+                  <span className="wc-data-value font-semibold">{count}</span>
                 </div>
               ))}
             </div>
           </InfoCard>
 
-          <InfoCard title="Fixture list">
-            <div className="space-y-3">
-              {fixtures.map((fixture) => (
-                <article
-                  key={fixture.id}
-                  className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-4"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-base font-semibold text-slate-900">
-                        {teamNameById.get(fixture.homeTeamId) ??
-                          fixture.homeTeamId.toUpperCase()}{" "}
-                        vs{" "}
-                        {teamNameById.get(fixture.awayTeamId) ??
-                          fixture.awayTeamId.toUpperCase()}
-                      </h3>
-                      <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
-                        {labelForStage(fixture.stage)}
-                        {fixture.group ? ` • Group ${fixture.group}` : ""}
-                      </p>
+          <InfoCard title="Fixture board">
+            <div className="space-y-4">
+              {fixtures.map((fixture) => {
+                const homeTeam = teamById.get(fixture.homeTeamId);
+                const awayTeam = teamById.get(fixture.awayTeamId);
+
+                return (
+                  <article
+                    key={fixture.id}
+                    className="wc-panel-muted rounded-[26px] px-5 py-5"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <TeamMark
+                          fifaCode={homeTeam?.fifaCode ?? fixture.homeTeamId.toUpperCase()}
+                          name={homeTeam?.name ?? fixture.homeTeamId}
+                          size="md"
+                        />
+                        <div className="text-center">
+                          <p className="wc-data-label text-xs font-semibold">Matchup</p>
+                          <p className="mt-2 text-2xl font-semibold text-[var(--secondary)]">VS</p>
+                        </div>
+                        <TeamMark
+                          fifaCode={awayTeam?.fifaCode ?? fixture.awayTeamId.toUpperCase()}
+                          name={awayTeam?.name ?? fixture.awayTeamId}
+                          size="md"
+                        />
+                      </div>
+
+                      <div className="rounded-full border border-[var(--border)] bg-[rgba(7,13,31,0.72)] px-3 py-1 text-xs uppercase tracking-[0.14em] text-[var(--accent)]">
+                        {fixture.status}
+                      </div>
                     </div>
 
-                    <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
-                      {labelForStatus(fixture.status)}
-                    </span>
-                  </div>
+                    <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                      <div>
+                        <h3 className="text-lg font-semibold text-[var(--foreground)]">
+                          {homeTeam?.name ?? fixture.homeTeamId} vs {awayTeam?.name ?? fixture.awayTeamId}
+                        </h3>
+                        <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--foreground-soft)]">
+                          {labelForStage(fixture.stage)}
+                          {fixture.group ? ` • Group ${fixture.group}` : ""}
+                        </p>
+                      </div>
 
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-                        Kickoff UTC
-                      </p>
-                      <p className="mt-1 text-sm text-slate-700">
-                        {formatKickoff(fixture.kickoffUtc)}
-                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-2xl border border-[var(--border)] bg-[rgba(12,19,36,0.52)] px-4 py-3">
+                          <p className="wc-data-label text-xs font-semibold">Kickoff UTC</p>
+                          <p className="wc-body mt-2 text-sm">{formatKickoff(fixture.kickoffUtc)}</p>
+                        </div>
+                        <div className="rounded-2xl border border-[var(--border)] bg-[rgba(12,19,36,0.52)] px-4 py-3">
+                          <p className="wc-data-label text-xs font-semibold">Venue</p>
+                          <p className="wc-body mt-2 text-sm">{fixture.venue}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-                        Venue
-                      </p>
-                      <p className="mt-1 text-sm text-slate-700">{fixture.venue}</p>
-                    </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </InfoCard>
         </div>

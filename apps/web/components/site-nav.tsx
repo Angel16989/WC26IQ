@@ -24,10 +24,10 @@ export function SiteNav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`rounded-full border px-3 py-1.5 text-sm transition ${
+            className={`rounded-full px-3 py-1.5 text-sm transition ${
               isActive
-                ? "border-[var(--accent)] bg-[var(--accent)] text-white"
-                : "border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:border-[var(--accent)]"
+                ? "wc-nav-link wc-nav-link-active"
+                : "wc-nav-link"
             }`}
           >
             {link.label}

@@ -4,10 +4,10 @@ WorldCupIQ is a 2026 FIFA World Cup analytics and prediction app scaffold. This 
 
 ## What Exists Today
 - `apps/web`: a Next.js frontend scaffold with placeholder routes and a typed API client layer
-- `apps/api`: a FastAPI backend with provider-backed teams/fixtures data and placeholder prediction logic
+- `apps/api`: a FastAPI backend with provider-backed teams/fixtures data and a staged master prediction formula
 - `packages/shared`: shared TypeScript contracts for the web app
 - `data`: root-level mock datasets for teams, players, fixtures, and predictions
-- `database/schema.sql`: a future Supabase/PostgreSQL schema draft that is not wired in yet
+- `database/schema.sql`: an optional PostgreSQL runtime schema used only when the API database URL is configured
 - `integrations/VOID`: the separate VOID runtime source tree that can run beside WorldCupIQ without being imported into the web or API app
 
 ## Repo Structure
@@ -29,7 +29,7 @@ worldcupiq/
 - The web routes are placeholders only and intentionally avoid final UI design.
 - The API now supports `mock`, `statsbomb`, and `sportsmonks` data providers.
 - `WORLDCUPIQ_DATA_PROVIDER=auto` tries SportsMonks World Cup 2026 season data first, enriches from StatsBomb open data when possible, and falls back to the root mock JSON when remote data is unavailable.
-- The database schema is documentation for future work only.
+- PostgreSQL storage is optional. When `WORLDCUPIQ_DATABASE_URL` is set, the API stores loaded teams, players, fixtures, prediction responses, and model runs.
 - VOID runs as a separate helper runtime and is not coupled into the web or API runtime.
 
 ## Run The Frontend
@@ -72,11 +72,16 @@ worldcupiq/
    - `WORLDCUPIQ_DATA_PROVIDER=auto` to try SportsMonks first and fall back automatically
    - `WORLDCUPIQ_DATA_PROVIDER=statsbomb` to use StatsBomb open data only
    - `WORLDCUPIQ_DATA_PROVIDER=mock` for fully local deterministic data
-7. Start the API:
+7. Optional: turn on Postgres storage in `apps/api/.env`:
+   ```bash
+   WORLDCUPIQ_DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DATABASE
+   WORLDCUPIQ_DATABASE_AUTO_MIGRATE=true
+   ```
+8. Start the API:
    ```bash
    uvicorn app.main:app --reload --app-dir apps/api
    ```
-8. Open `http://localhost:8000/docs`.
+9. Open `http://localhost:8000/docs`.
 
 ## Quality Checks
 - Frontend lint:
@@ -104,6 +109,6 @@ Slack is the primary live output for VOID right now, and the Control Room dashbo
 ## Recommended Next Steps
 1. Connect the placeholder Teams and Fixtures pages to live API responses.
 2. Calibrate the current StatsBomb and SportsMonks provider blend with first-party 2026 tournament and squad data.
-3. Expand the prediction engine beyond placeholder heuristics into measurable model experiments.
+3. Calibrate the master prediction formula with source-backed historical match rows.
 4. Add tournament-table calculations and richer simulator outputs.
 5. Plan the first intentional Void integration after the base web/API workflow is stable.

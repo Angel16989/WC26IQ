@@ -4,4 +4,4 @@ pydantic
 pytest
 httpx
 ruff
-
+psycopg[binary]

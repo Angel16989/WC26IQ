@@ -7,7 +7,7 @@ WorldCupIQ is split into a small web app, a small API, shared TypeScript contrac
 The frontend lives in `apps/web` and uses Next.js App Router with TypeScript. Right now it only contains placeholder pages and a typed API client layer. This means the route structure exists, but the final visual design and deep data flows are intentionally deferred.
 
 ## Backend
-The backend lives in `apps/api` and uses FastAPI. It exposes a few clean endpoints for health, teams, fixtures, match prediction, and tournament simulation. The current logic is placeholder logic only, built on top of mock JSON data.
+The backend lives in `apps/api` and uses FastAPI. It exposes clean endpoints for health, teams, fixtures, match prediction, and tournament simulation. The match prediction path now uses the staged WorldCupIQ master formula: team-strength prior, recent form, squad depth, expected goals, and a Poisson scoreline matrix.
 
 ## Shared Types
 The shared TypeScript contracts live in `packages/shared`. These types define the shape of teams, players, matches, predictions, group tables, and simulation responses on the frontend side. The FastAPI schemas mirror those shapes manually so the contracts stay aligned while the backend remains Python-based.
@@ -15,12 +15,11 @@ The shared TypeScript contracts live in `packages/shared`. These types define th
 ## Mock Data
 The `data/` folder is the single source of mock truth for now. Keeping it at the repository root makes it easier to replace with real datasets later and helps both documentation and backend services point to the same files.
 
-## Future Database
-The `database/schema.sql` file is only a draft for a future Supabase/PostgreSQL setup. It documents likely tables and relationships, but nothing in the running app reads from it yet.
+## Optional Database
+The `database/schema.sql` file documents the optional PostgreSQL runtime schema. The API only writes to it when `WORLDCUPIQ_DATABASE_URL` is configured; local mock mode still works without a database.
 
-## Future Prediction Engine
-The current prediction logic is deterministic and lightweight on purpose. It is only there to support API structure and future UI integration. More advanced methods like Elo, Poisson, Dixon-Coles, xG-driven estimates, Monte Carlo simulation, and player-level scorer probabilities belong in a later phase once real datasets and validation workflows are ready.
+## Prediction Engine
+The current prediction logic is deterministic and explainable on purpose. It uses the local data provider fields available today, then marks deeper layers like Dixon-Coles correction, Brier/log-loss calibration, and source-backed player availability as pending until the historical match and squad datasets are clean.
 
 ## Future Void Integration
-Void is planned as a separate research and AI-agent style system. For now it has a reserved folder and documentation only. This keeps the main web/API app stable while leaving a clear place for future integration work.
-
+Void remains a separate research and AI-agent style system. The backend can use conclusions from Void research artifacts, but it does not import or run Void as part of the web/API app.

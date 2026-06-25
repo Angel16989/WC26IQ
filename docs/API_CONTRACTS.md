@@ -28,7 +28,7 @@ Response shape:
 - `Match[]`
 
 ## `POST /predict/match`
-Creates a placeholder match prediction from two team IDs.
+Creates a match prediction from two team IDs using the WorldCupIQ master formula.
 
 Example request:
 ```json
@@ -63,8 +63,8 @@ Example response:
     }
   ],
   "confidence": "medium",
-  "modelVersion": "placeholder-v1",
-  "explanation": "Placeholder deterministic model using team-strength, form, squad strength, and player goal-threat indicators."
+  "modelVersion": "worldcupiq-master-formula-v1",
+  "explanation": "Argentina grades higher in the master formula after team strength, recent form, squad depth, and expected goals are converted through a Poisson scoreline matrix."
 }
 ```
 
@@ -89,6 +89,5 @@ Example response highlights:
 
 ## Notes
 - The current API is built on mock data only.
-- Prediction and simulation responses are deterministic placeholders, not production model outputs.
+- Prediction responses use the staged master formula. They are still not production-calibrated until source-backed match history, Dixon-Coles correction, and calibration metrics are added.
 - The TypeScript contracts in `packages/shared` and the Pydantic schemas in `apps/api/app/schemas` should stay aligned as the API evolves.
-

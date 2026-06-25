@@ -2,6 +2,8 @@ import type { Team } from "@worldcupiq/shared";
 
 import { InfoCard } from "@/components/info-card";
 import { PageHero } from "@/components/page-hero";
+import { CountUp } from "@/components/count-up";
+import { StaggerList } from "@/components/stagger-list";
 import { apiClient } from "@/lib/api/client";
 
 function buildConfederationSummary(teams: Team[]) {
@@ -46,24 +48,31 @@ export default async function TeamsPage() {
         title="Live team profiles and strength inputs"
         description="This page now reads directly from the backend `/teams` contract and reflects the active provider behind the API. Team strength, recent form, squad depth, and tournament grouping stay in the same analytics-first shape."
         aside={
-          <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)]">
+          <div className="wc-panel-muted rounded-3xl p-5">
+            <p className="wc-data-label text-xs font-semibold">
               Live Snapshot
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
               <div>
-                <p className="text-2xl font-semibold">{teams.length}</p>
-                <p className="text-sm text-slate-600">Teams returned</p>
-              </div>
-              <div>
-                <p className="text-2xl font-semibold">{groups.size}</p>
-                <p className="text-sm text-slate-600">Groups represented</p>
-              </div>
-              <div>
-                <p className="text-2xl font-semibold">
-                  {averageRating(teams, (team) => team.strengthRating)}
+                <p className="wc-data-value text-2xl font-semibold wc-shimmer-text">
+                  <CountUp end={teams.length} />
                 </p>
-                <p className="text-sm text-slate-600">Average strength rating</p>
+                <p className="wc-body text-sm">Teams returned</p>
+              </div>
+              <div>
+                <p className="wc-data-value text-2xl font-semibold wc-shimmer-text">
+                  <CountUp end={groups.size} />
+                </p>
+                <p className="wc-body text-sm">Groups represented</p>
+              </div>
+              <div>
+                <p className="wc-data-value text-2xl font-semibold wc-shimmer-text">
+                  <CountUp
+                    end={parseFloat(averageRating(teams, (team) => team.strengthRating))}
+                    decimals={1}
+                  />
+                </p>
+                <p className="wc-body text-sm">Average strength rating</p>
               </div>
             </div>
           </div>
@@ -72,7 +81,7 @@ export default async function TeamsPage() {
 
       {errorMessage ? (
         <InfoCard title="Live teams unavailable">
-          <p className="text-sm leading-7 text-slate-700">
+          <p className="text-sm leading-7">
             {errorMessage} Check that the API is running at the configured base URL and
             try again.
           </p>
@@ -81,7 +90,7 @@ export default async function TeamsPage() {
 
       {!errorMessage && teams.length === 0 ? (
         <InfoCard title="No teams returned">
-          <p className="text-sm leading-7 text-slate-700">
+          <p className="text-sm leading-7">
             The API responded successfully but did not return any team data.
           </p>
         </InfoCard>
@@ -92,36 +101,40 @@ export default async function TeamsPage() {
           <InfoCard title="Coverage summary">
             <div className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+                <div className="wc-panel-muted rounded-2xl px-4 py-3">
+                  <p className="wc-data-label text-xs font-semibold">
                     Form Index
                   </p>
-                  <p className="mt-2 text-2xl font-semibold">
-                    {averageRating(teams, (team) => team.formIndex)}
+                  <p className="wc-data-value mt-2 text-2xl font-semibold wc-shimmer-text">
+                    <CountUp
+                      end={parseFloat(averageRating(teams, (team) => team.formIndex))}
+                      decimals={1}
+                    />
                   </p>
                 </div>
-                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+                <div className="wc-panel-muted rounded-2xl px-4 py-3">
+                  <p className="wc-data-label text-xs font-semibold">
                     Squad Strength
                   </p>
-                  <p className="mt-2 text-2xl font-semibold">
-                    {averageRating(teams, (team) => team.squadStrength)}
+                  <p className="wc-data-value mt-2 text-2xl font-semibold wc-shimmer-text">
+                    <CountUp
+                      end={parseFloat(averageRating(teams, (team) => team.squadStrength))}
+                      decimals={1}
+                    />
                   </p>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Confederation split
-                </h3>
+                <h3 className="text-sm font-semibold text-[var(--foreground)]">Confederation split</h3>
                 <div className="space-y-2">
                   {confederations.map(([confederation, count]) => (
                     <div
                       key={confederation}
-                      className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3"
+                      className="wc-panel-muted flex items-center justify-between rounded-2xl px-4 py-3"
                     >
                       <span>{confederation}</span>
-                      <span className="font-semibold">{count}</span>
+                      <span className="wc-data-value font-semibold">{count}</span>
                     </div>
                   ))}
                 </div>
@@ -130,31 +143,31 @@ export default async function TeamsPage() {
           </InfoCard>
 
           <InfoCard title="Team signals">
-            <div className="space-y-3">
+            <StaggerList className="space-y-3">
               {teams.map((team) => (
                 <article
                   key={team.id}
-                  className="rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-4"
+                  className="wc-panel-muted rounded-2xl px-4 py-4"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-slate-900">
+                        <h3 className="text-base font-semibold text-[var(--foreground)]">
                           {team.name}
                         </h3>
-                        <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+                        <span className="wc-pill rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
                           {team.fifaCode}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
+                      <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--foreground-soft)]">
                         {team.confederation}
                         {team.group ? ` • Group ${team.group}` : ""}
                       </p>
                     </div>
 
-                    <p className="text-sm text-slate-600">
+                    <p className="wc-body text-sm">
                       Last five:{" "}
-                      <span className="font-medium text-slate-900">
+                      <span className="font-medium text-[var(--foreground)]">
                         {team.lastFiveResults.join(" ")}
                       </span>
                     </p>
@@ -162,33 +175,33 @@ export default async function TeamsPage() {
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+                      <p className="wc-data-label text-xs font-semibold">
                         Strength
                       </p>
-                      <p className="mt-1 text-xl font-semibold">
+                      <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.strengthRating.toFixed(1)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+                      <p className="wc-data-label text-xs font-semibold">
                         Form
                       </p>
-                      <p className="mt-1 text-xl font-semibold">
+                      <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.formIndex.toFixed(1)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+                      <p className="wc-data-label text-xs font-semibold">
                         Squad Depth
                       </p>
-                      <p className="mt-1 text-xl font-semibold">
+                      <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.squadStrength.toFixed(1)}
                       </p>
                     </div>
                   </div>
                 </article>
               ))}
-            </div>
+            </StaggerList>
           </InfoCard>
         </div>
       ) : null}
