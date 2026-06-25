@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 
-const GlobeWrapper = dynamic(() => import("@/components/globe-wrapper"), { ssr: false });
+const GlobeWrapper = dynamic(
+  () => import("@/components/globe-wrapper").then((m) => ({ default: m.GlobeWrapper })),
+  { ssr: false }
+);
 
 /* ── Image pool — cycling backgrounds ───────────────────────────────── */
 const BG_IMAGES = [
