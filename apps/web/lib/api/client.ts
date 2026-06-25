@@ -3,6 +3,7 @@ import type {
   Match,
   MatchPredictionRequest,
   MatchPredictionResponse,
+  Player,
   Team,
   TournamentSimulationRequest,
   TournamentSimulationResponse,
