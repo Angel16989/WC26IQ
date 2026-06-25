@@ -418,29 +418,58 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
           gap: "clamp(12px, 2.5vh, 28px)",
         }}>
 
+          {/* Dark radial fog behind all text — ensures legibility on any bg image */}
+          {isVisible(4) && (
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "radial-gradient(ellipse 80% 70% at 50% 48%, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 50%, transparent 80%)",
+                pointerEvents: "none",
+              }}
+            />
+          )}
+
           {/* FIFA WORLD CUP — letter reveal */}
           {isVisible(4) && (
-            <div style={{ textAlign: "center", lineHeight: 1 }}>
+            <div style={{ textAlign: "center", lineHeight: 1, position: "relative", zIndex: 2 }}>
+              {/* Eyebrow */}
               <p style={{
                 fontFamily: "var(--font-data)",
-                fontSize: "clamp(11px, 1.4vw, 18px)",
-                letterSpacing: "0.5em",
-                color: "rgba(255,255,255,0.55)",
+                fontSize: "clamp(10px, 1.2vw, 15px)",
+                letterSpacing: "0.55em",
+                color: "#00e5ff",
                 textTransform: "uppercase",
                 animation: "slideUp 0.6s ease both",
-                marginBottom: "0.6em",
+                marginBottom: "0.7em",
+                textShadow: "0 0 20px rgba(0,229,255,0.9), 0 0 40px rgba(0,229,255,0.5)",
               }}>
-                The Future of Football Analytics
+                ⚽ The Future of Football Analytics ⚽
               </p>
+              {/* Main headline */}
               <div style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(28px, 5.5vw, 76px)",
-                fontWeight: 800,
-                color: "#fff",
+                fontSize: "clamp(30px, 5.8vw, 80px)",
+                fontWeight: 900,
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
+                letterSpacing: "0.14em",
                 lineHeight: 1,
                 animation: "glitch 4s ease infinite 1s",
+                /* Chrome/metallic gradient */
+                background: "linear-gradient(180deg, #ffffff 0%, #c8e8ff 35%, #90c8ff 55%, #ffffff 80%, #d0ecff 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                /* Layered glow: soft halo + hard outline + depth shadow */
+                filter: [
+                  "drop-shadow(0 0 2px rgba(255,255,255,1))",
+                  "drop-shadow(0 0 12px rgba(120,190,255,0.9))",
+                  "drop-shadow(0 0 40px rgba(60,140,255,0.7))",
+                  "drop-shadow(0 4px 0 rgba(0,0,0,0.95))",
+                  "drop-shadow(0 8px 16px rgba(0,0,0,0.8))",
+                ].join(" "),
               }}>
                 <CharReveal text="FIFA WORLD CUP" delay={0} />
               </div>
@@ -450,17 +479,27 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
           {/* 2026 — slam in */}
           {isVisible(5) && (
             <div style={{
+              position: "relative",
+              zIndex: 2,
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(80px, 18vw, 220px)",
+              fontSize: "clamp(88px, 19vw, 240px)",
               fontWeight: 900,
               lineHeight: 0.85,
-              letterSpacing: "0.15em",
-              background: "linear-gradient(180deg, #d3f340 0%, #aacc1a 40%, #fff9a0 70%, #d3f340 100%)",
+              letterSpacing: "0.12em",
+              /* Bold gold with inner highlight stripe */
+              background: "linear-gradient(175deg, #fffde0 0%, #f5e642 18%, #d3f340 38%, #aacc1a 55%, #f0ff60 72%, #d3f340 88%, #96b800 100%)",
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               WebkitTextFillColor: "transparent",
               animation: "countUp2026 0.8s cubic-bezier(0.22,1.36,0.4,1) both",
-              filter: "drop-shadow(0 0 40px rgba(211,243,64,0.6))",
+              filter: [
+                "drop-shadow(0 0 4px rgba(255,255,180,1))",
+                "drop-shadow(0 0 24px rgba(211,243,64,1))",
+                "drop-shadow(0 0 60px rgba(211,243,64,0.8))",
+                "drop-shadow(0 0 120px rgba(180,220,0,0.5))",
+                "drop-shadow(0 6px 0 rgba(0,0,0,0.95))",
+                "drop-shadow(0 12px 24px rgba(0,0,0,0.8))",
+              ].join(" "),
             }}>
               2026
             </div>
@@ -469,6 +508,8 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
           {/* 3D Globe */}
           {isVisible(6) && (
             <div style={{
+              position: "relative",
+              zIndex: 2,
               width: "clamp(160px, 22vw, 260px)",
               height: "clamp(160px, 22vw, 260px)",
               animation: "slamIn 1.2s cubic-bezier(0.22,1.36,0.4,1) both",
@@ -479,30 +520,55 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
 
           {/* WorldCupIQ */}
           {isVisible(7) && (
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", position: "relative", zIndex: 2 }}>
               <div style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(32px, 5vw, 64px)",
-                fontWeight: 700,
-                color: "#fff",
-                letterSpacing: "-0.02em",
+                fontSize: "clamp(36px, 5.5vw, 72px)",
+                fontWeight: 800,
+                letterSpacing: "-0.01em",
                 lineHeight: 1,
               }}>
-                <CharReveal text="WorldCup" delay={0} />
-                <CharReveal
-                  text="IQ"
-                  delay={550}
-                  className=""
-                />
+                {/* "WorldCup" — bright electric cyan */}
+                <span style={{
+                  background: "linear-gradient(135deg, #ffffff 0%, #a0f0ff 35%, #00e5ff 60%, #80f8ff 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: [
+                    "drop-shadow(0 0 2px rgba(255,255,255,1))",
+                    "drop-shadow(0 0 16px rgba(0,229,255,1))",
+                    "drop-shadow(0 0 48px rgba(0,180,255,0.8))",
+                    "drop-shadow(0 4px 0 rgba(0,0,0,0.95))",
+                  ].join(" "),
+                }}>
+                  <CharReveal text="WorldCup" delay={0} />
+                </span>
+                {/* "IQ" — hot lime green, extra punch */}
+                <span style={{
+                  background: "linear-gradient(135deg, #f0ff70 0%, #d3f340 35%, #ffe000 60%, #d3f340 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: [
+                    "drop-shadow(0 0 2px rgba(255,255,180,1))",
+                    "drop-shadow(0 0 16px rgba(211,243,64,1))",
+                    "drop-shadow(0 0 48px rgba(180,220,0,0.8))",
+                    "drop-shadow(0 4px 0 rgba(0,0,0,0.95))",
+                  ].join(" "),
+                }}>
+                  <CharReveal text="IQ" delay={550} />
+                </span>
               </div>
+              {/* Tagline bar */}
               <div style={{
                 fontFamily: "var(--font-data)",
-                fontSize: "clamp(9px, 1vw, 13px)",
-                letterSpacing: "0.35em",
-                color: "var(--secondary)",
+                fontSize: "clamp(9px, 1.1vw, 14px)",
+                letterSpacing: "0.4em",
+                color: "#00e5ff",
                 textTransform: "uppercase",
-                marginTop: "0.5em",
+                marginTop: "0.6em",
                 animation: "slideUp 0.5s ease 0.3s both",
+                textShadow: "0 0 16px rgba(0,229,255,0.9), 0 0 32px rgba(0,229,255,0.5)",
               }}>
                 Intelligence · Analytics · Predictions
               </div>
@@ -513,17 +579,25 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
           {isVisible(8) && (
             <p style={{
               fontFamily: "var(--font-body)",
-              fontSize: "clamp(13px, 1.4vw, 17px)",
-              color: "rgba(255,255,255,0.55)",
+              fontSize: "clamp(14px, 1.5vw, 18px)",
+              fontWeight: 500,
+              color: "#f0f8ff",
               textAlign: "center",
               maxWidth: 520,
-              lineHeight: 1.65,
+              lineHeight: 1.7,
               animation: "slideUp 0.7s ease both",
               padding: "0 24px",
+              position: "relative",
+              zIndex: 2,
+              textShadow: "0 2px 8px rgba(0,0,0,1), 0 0 24px rgba(0,0,0,0.9)",
             }}>
-              48 nations. 104 matches. One prediction engine.
+              48 nations.{" "}
+              <span style={{ color: "#d3f340", textShadow: "0 0 12px rgba(211,243,64,0.8)" }}>104 matches.</span>
+              {" "}One prediction engine.
               <br />
-              Live data from the tournament, minute by minute.
+              <span style={{ color: "rgba(180,230,255,0.85)" }}>
+                Live data from the tournament, minute by minute.
+              </span>
             </p>
           )}
 
@@ -532,31 +606,34 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
             <button
               onClick={(e) => { e.stopPropagation(); handleEnter(); }}
               style={{
-                marginTop: 8,
-                padding: "16px 56px",
-                fontSize: "clamp(13px, 1.4vw, 17px)",
+                marginTop: 12,
+                position: "relative",
+                zIndex: 2,
+                padding: "18px 64px",
+                fontSize: "clamp(14px, 1.5vw, 18px)",
                 fontFamily: "var(--font-display)",
-                fontWeight: 700,
-                letterSpacing: "0.18em",
+                fontWeight: 800,
+                letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 color: "#000",
-                background: "linear-gradient(135deg, #d3f340, #aacc1a)",
-                border: "none",
+                background: "linear-gradient(135deg, #f0ff70, #d3f340 40%, #aacc1a 70%, #d3f340)",
+                border: "2px solid rgba(255,255,255,0.3)",
                 borderRadius: 9999,
                 cursor: "pointer",
                 animation: "slamIn 0.6s cubic-bezier(0.22,1.36,0.4,1) both, pulseCTA 2s ease 0.6s infinite",
                 transition: "transform 0.2s, filter 0.2s",
+                boxShadow: "0 0 32px rgba(211,243,64,0.5), 0 8px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.transform = "scale(1.06)";
-                (e.currentTarget as HTMLElement).style.filter = "brightness(1.15)";
+                (e.currentTarget as HTMLElement).style.transform = "scale(1.07)";
+                (e.currentTarget as HTMLElement).style.filter = "brightness(1.2) saturate(1.3)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.transform = "scale(1)";
                 (e.currentTarget as HTMLElement).style.filter = "brightness(1)";
               }}
             >
-              Enter the IQ →
+              ⚡ Enter the IQ →
             </button>
           )}
         </div>
@@ -611,18 +688,20 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
             <span style={{
               fontFamily: "var(--font-data)",
               fontSize: 11,
-              color: "rgba(255,255,255,0.4)",
+              color: "rgba(255,255,255,0.75)",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
+              textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.7)",
             }}>
               🇺🇸 USA · 🇨🇦 Canada · 🇲🇽 Mexico
             </span>
             <span style={{
               fontFamily: "var(--font-data)",
               fontSize: 11,
-              color: "rgba(0,229,255,0.6)",
+              color: "#00e5ff",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
+              textShadow: "0 0 12px rgba(0,229,255,0.9), 0 1px 6px rgba(0,0,0,0.9)",
             }}>
               Jun 11 – Jul 19 · 16 Venues
             </span>
