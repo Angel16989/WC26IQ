@@ -13,6 +13,7 @@ import { TiltCard } from "@/components/tilt-card";
 import { CountUp } from "@/components/count-up";
 import { StaggerList } from "@/components/stagger-list";
 import { GlobeWrapper } from "@/components/globe-wrapper";
+import { LandingGate } from "@/components/landing-gate";
 import { apiClient } from "@/lib/api/client";
 
 function probabilityWidth(probability: number) {
@@ -91,6 +92,7 @@ export default async function HomePage() {
       : 0;
 
   return (
+    <LandingGate>
     <div className="space-y-6">
       {/* ── Hero with 3D Globe ───────────────────────────────────────── */}
       <PageHero
@@ -355,5 +357,6 @@ export default async function HomePage() {
         </InfoCard>
       </div>
     </div>
+    </LandingGate>
   );
 }
