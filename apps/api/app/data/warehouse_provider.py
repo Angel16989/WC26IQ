@@ -122,16 +122,17 @@ class WarehouseDataProvider:
         logger.info("Loading live data from wciq_warehouse …")
         try:
             with self._connect() as conn:
-                teams = self._load_teams(conn)
+                teams    = self._load_teams(conn)
                 fixtures = self._load_fixtures(conn)
+                players  = self._load_players(conn)
         except Exception as exc:
             raise DataProviderError(f"Warehouse load failed: {exc}") from exc
 
         logger.info(
-            "Warehouse: %d teams, %d fixtures loaded",
-            len(teams), len(fixtures),
+            "Warehouse: %d teams, %d fixtures, %d players loaded",
+            len(teams), len(fixtures), len(players),
         )
-        return DataBundle(teams=teams, players=[], fixtures=fixtures)
+        return DataBundle(teams=teams, players=players, fixtures=fixtures)
 
     def _load_teams(self, conn) -> list[Team]:
         rows = conn.execute(
@@ -160,6 +161,37 @@ class WarehouseDataProvider:
                 )
             )
         return teams
+
+    def _load_players(self, conn) -> list[Player]:
+        rows = conn.execute(
+            """
+            SELECT player_id, team_id, player_name, position, club, raw_player
+            FROM core.players
+            ORDER BY team_id, position, player_name
+            """
+        ).fetchall()
+
+        _goal_threat_default = {"GK": 0.05, "DEF": 0.12, "MID": 0.28, "FWD": 0.58}
+
+        players: list[Player] = []
+        for row in rows:
+            player_id, team_id, name, position, club, raw_json = row
+            raw = raw_json if isinstance(raw_json, dict) else {}
+            pos = (position or "MID").upper()[:3]
+            goal_threat = float(raw.get("goal_threat") or _goal_threat_default.get(pos, 0.2))
+            players.append(
+                Player(
+                    id=player_id,
+                    teamId=team_id,
+                    name=name or "Unknown",
+                    position=pos,
+                    club=club or "",
+                    clubFormIndex=float(raw.get("club_form_index") or 50.0),
+                    goalThreat=round(goal_threat, 3),
+                    likelyStarter=bool(raw.get("likely_starter", True)),
+                )
+            )
+        return players
 
     def _load_fixtures(self, conn) -> list[Match]:
         rows = conn.execute(

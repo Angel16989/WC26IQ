@@ -1,35 +1,75 @@
+// FIFA code → ISO 3166-1 alpha-2 mapping for all 48 WC 2026 teams
 const fifaToIsoCode: Record<string, string> = {
-  ARG: "AR",
+  // AFC
   AUS: "AU",
-  BEL: "BE",
-  BRA: "BR",
+  IRN: "IR",
+  IRQ: "IQ",
+  JOR: "JO",
+  JPN: "JP",
+  KOR: "KR",
+  KSA: "SA",
+  QAT: "QA",
+  UZB: "UZ",
+  // CAF
+  ALG: "DZ",
+  CIV: "CI",
+  COD: "CD",
+  CPV: "CV",
+  EGY: "EG",
+  GHA: "GH",
+  MAR: "MA",
+  NGA: "NG",
+  RSA: "ZA",
+  SEN: "SN",
+  TUN: "TN",
+  // CONCACAF
   CAN: "CA",
-  CMR: "CM",
-  CRC: "CR",
-  CRO: "HR",
-  DEN: "DK",
+  CUW: "CW",
+  HAI: "HT",
+  JAM: "JM",
+  MEX: "MX",
+  PAN: "PA",
+  USA: "US",
+  // CONMEBOL
+  ARG: "AR",
+  BOL: "BO",
+  BRA: "BR",
+  CHI: "CL",
+  COL: "CO",
   ECU: "EC",
+  PAR: "PY",
+  PER: "PE",
+  URU: "UY",
+  VEN: "VE",
+  // OFC
+  NZL: "NZ",
+  // UEFA
+  AUT: "AT",
+  BEL: "BE",
+  BIH: "BA",
+  CRO: "HR",
+  CZE: "CZ",
+  DEN: "DK",
   ENG: "GB",
   ESP: "ES",
   FRA: "FR",
   GER: "DE",
-  GHA: "GH",
-  IRN: "IR",
-  JPN: "JP",
-  KOR: "KR",
-  KSA: "SA",
-  MAR: "MA",
-  MEX: "MX",
+  HUN: "HU",
+  ISL: "IS",
+  ITA: "IT",
   NED: "NL",
+  NOR: "NO",
   POL: "PL",
   POR: "PT",
-  QAT: "QA",
-  SEN: "SN",
+  ROU: "RO",
+  SCO: "GB",
   SRB: "RS",
   SUI: "CH",
-  TUN: "TN",
-  URU: "UY",
-  USA: "US",
+  SVK: "SK",
+  SVN: "SI",
+  SWE: "SE",
+  TUR: "TR",
+  UKR: "UA",
   WAL: "GB",
 };
 
@@ -41,10 +81,30 @@ function isoCodeToFlagEmoji(isoCode: string) {
     .join("");
 }
 
-export function getTeamIsoCode(fifaCode: string) {
-  return fifaToIsoCode[fifaCode.toUpperCase()] ?? fifaCode.slice(0, 2).toUpperCase();
+export function getTeamIsoCode(fifaCode: string): string {
+  return fifaToIsoCode[fifaCode.toUpperCase()] ?? "UN";
 }
 
-export function getTeamFlagEmoji(fifaCode: string) {
-  return isoCodeToFlagEmoji(getTeamIsoCode(fifaCode));
+export function getTeamFlagEmoji(fifaCode: string): string {
+  const iso = getTeamIsoCode(fifaCode);
+  if (iso === "UN") return "🏳️";
+  return isoCodeToFlagEmoji(iso);
 }
+
+// Returns a path to a local flag SVG if it exists, otherwise falls back to emoji.
+// SVGs are downloaded by scripts/download_flags.sh to public/flags/{iso}.svg
+export function getTeamFlagSvgPath(fifaCode: string): string | null {
+  const iso = getTeamIsoCode(fifaCode);
+  if (!iso || iso === "UN") return null;
+  return `/flags/${iso.toLowerCase()}.svg`;
+}
+
+// Confederation colours used as accent gradients in team cards
+export const confederationAccent: Record<string, string> = {
+  UEFA:     "#00e5ff",
+  CONMEBOL: "#d3f340",
+  CONCACAF: "#ff9f1c",
+  CAF:      "#ff007f",
+  AFC:      "#a78bfa",
+  OFC:      "#4ade80",
+};

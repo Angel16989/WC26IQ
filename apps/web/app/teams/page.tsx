@@ -1,7 +1,9 @@
+import Link from "next/link";
 import type { Team } from "@worldcupiq/shared";
 
 import { InfoCard } from "@/components/info-card";
 import { PageHero } from "@/components/page-hero";
+import { TeamMark } from "@/components/team-mark";
 import { CountUp } from "@/components/count-up";
 import { StaggerList } from "@/components/stagger-list";
 import { apiClient } from "@/lib/api/client";
@@ -145,24 +147,28 @@ export default async function TeamsPage() {
           <InfoCard title="Team signals">
             <StaggerList className="space-y-3">
               {teams.map((team) => (
-                <article
+                <Link
                   key={team.id}
-                  className="wc-panel-muted rounded-2xl px-4 py-4"
+                  href={`/teams/${team.id}`}
+                  className="group block wc-panel-muted rounded-2xl px-4 py-4 transition-all hover:border-[var(--secondary)] hover:bg-[rgba(0,229,255,0.04)]"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-[var(--foreground)]">
-                          {team.name}
-                        </h3>
-                        <span className="wc-pill rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.16em]">
-                          {team.fifaCode}
-                        </span>
+                    <div className="flex items-center gap-3">
+                      <TeamMark fifaCode={team.fifaCode} name={team.name} size="sm" />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-base font-semibold text-[var(--foreground)] group-hover:text-[var(--secondary)] transition-colors">
+                            {team.name}
+                          </h3>
+                          <span className="wc-pill rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-[0.16em]">
+                            {team.fifaCode}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-[var(--foreground-soft)]">
+                          {team.confederation}
+                          {team.group ? ` • Group ${team.group}` : ""}
+                        </p>
                       </div>
-                      <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--foreground-soft)]">
-                        {team.confederation}
-                        {team.group ? ` • Group ${team.group}` : ""}
-                      </p>
                     </div>
 
                     <p className="wc-body text-sm">
@@ -175,31 +181,25 @@ export default async function TeamsPage() {
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     <div>
-                      <p className="wc-data-label text-xs font-semibold">
-                        Strength
-                      </p>
+                      <p className="wc-data-label text-xs font-semibold">Strength</p>
                       <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.strengthRating.toFixed(1)}
                       </p>
                     </div>
                     <div>
-                      <p className="wc-data-label text-xs font-semibold">
-                        Form
-                      </p>
+                      <p className="wc-data-label text-xs font-semibold">Form</p>
                       <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.formIndex.toFixed(1)}
                       </p>
                     </div>
                     <div>
-                      <p className="wc-data-label text-xs font-semibold">
-                        Squad Depth
-                      </p>
+                      <p className="wc-data-label text-xs font-semibold">Squad Depth</p>
                       <p className="wc-data-value mt-1 text-xl font-semibold">
                         {team.squadStrength.toFixed(1)}
                       </p>
                     </div>
                   </div>
-                </article>
+                </Link>
               ))}
             </StaggerList>
           </InfoCard>

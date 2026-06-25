@@ -29,6 +29,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const apiClient = {
   health: () => request<HealthResponse>("/health"),
   teams: () => request<Team[]>("/teams"),
+  team: (id: string) => request<Team>(`/teams/${encodeURIComponent(id)}`),
+  teamPlayers: (id: string) => request<Player[]>(`/teams/${encodeURIComponent(id)}/players`),
   fixtures: () => request<Match[]>("/fixtures"),
   predictMatch: (payload: MatchPredictionRequest) =>
     request<MatchPredictionResponse>("/predict/match", {

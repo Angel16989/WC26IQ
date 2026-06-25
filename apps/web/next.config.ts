@@ -17,6 +17,13 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@worldcupiq/shared"],
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "a.espncdn.com" },
+      { protocol: "https", hostname: "flagcdn.com" },
+    ],
+    unoptimized: true,
+  },
   async headers() {
     return [
       {
