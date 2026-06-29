@@ -17,10 +17,11 @@ const STAGE_LABELS: Record<string, string> = {
 };
 
 function stageAccent(stage: string) {
-  if (stage === "final") return "#ffd700";
-  if (stage === "semifinal") return "#d3f340";
-  if (stage === "quarterfinal") return "#00e5ff";
-  return "rgba(255,255,255,0.5)";
+  if (stage === "final")         return "#ffd700";
+  if (stage === "semifinal")     return "#d3f340";
+  if (stage === "quarterfinal")  return "#00e5ff";
+  if (stage === "round_of_16")   return "#a78bfa";   // purple — was transparent, now visible
+  return "#94a3b8";
 }
 
 function statusBadge(status: string, homeScore: number | null, awayScore: number | null) {
@@ -101,28 +102,33 @@ function MatchCard({ m, accent, showPrediction }: { m: BracketMatch; accent: str
         </span>
       </div>
 
-      {/* Prediction bars (only when not completed) */}
+      {/* Prediction bars — knockout has no draws, show win% only */}
       {showPrediction && m.status === "scheduled" && m.homeWinPct !== null && (
-        <div className="mt-3 space-y-1">
-          <div className="flex items-center gap-2 text-[10px]" style={{ color: "var(--foreground-muted)" }}>
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[rgba(35,41,60,0.8)]">
+        <div className="mt-3 space-y-1.5">
+          {/* Home win % */}
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="w-8 text-left font-bold" style={{ color: "#ffffff" }}>{m.homeWinPct}%</span>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-[rgba(35,41,60,0.8)]">
               <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${m.homeWinPct}%`, background: `linear-gradient(90deg, ${accent}80, ${accent})` }}
+                className="h-full rounded-l-full transition-all"
+                style={{ width: `${m.homeWinPct}%`, background: `linear-gradient(90deg, ${accent}60, ${accent})` }}
               />
             </div>
-            <span className="w-8 text-right font-semibold" style={{ color: accent }}>{m.homeWinPct}%</span>
           </div>
-          <div className="flex items-center gap-2 text-[10px]" style={{ color: "var(--foreground-muted)" }}>
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[rgba(35,41,60,0.8)]">
+          {/* Away win % */}
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="w-8 text-left font-bold" style={{ color: "#ffffff" }}>{m.awayWinPct}%</span>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-[rgba(35,41,60,0.8)]">
               <div
-                className="h-full rounded-full"
-                style={{ width: `${m.awayWinPct ?? 0}%`, background: "linear-gradient(90deg, rgba(148,163,184,0.4), rgba(148,163,184,0.7))" }}
+                className="h-full rounded-l-full"
+                style={{ width: `${m.awayWinPct ?? 0}%`, background: "linear-gradient(90deg, rgba(148,163,184,0.35), rgba(148,163,184,0.65))" }}
               />
             </div>
-            <span className="w-8 text-right font-semibold">{m.awayWinPct}%</span>
           </div>
-          <p className="text-center text-[9px] opacity-40">Draw: {m.drawPct}% · Poisson DC model</p>
+          {/* No draw in knockout — extra time / penalties instead */}
+          <p className="text-center text-[9px] opacity-35">
+            Win% to advance · ET/pens if level · Poisson DC
+          </p>
         </div>
       )}
     </div>

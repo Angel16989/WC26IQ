@@ -20,6 +20,62 @@ function probabilityWidth(probability: number) {
   return `${Math.round(probability * 100)}%`;
 }
 
+function matchTime(utc: string) {
+  return new Date(utc).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+    hour12: false,
+  });
+}
+
+function matchDate(utc: string) {
+  return new Date(utc).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function stageLabel(stage: Match["stage"]) {
+  return stage.replaceAll("_", " ");
+}
+
+function scoreText(match: Match) {
+  if (match.homeScore != null && match.awayScore != null) {
+    return `${match.homeScore} – ${match.awayScore}`;
+  }
+  if (match.status === "live") {
+    return "LIVE";
+  }
+  if (match.status === "final") {
+    return "FT";
+  }
+  return matchTime(match.kickoffUtc);
+}
+
+function matchStatusLabel(match: Match) {
+  if (match.status === "live") {
+    return "Live now";
+  }
+  if (match.status === "final") {
+    return "Recently finished";
+  }
+  return `${matchDate(match.kickoffUtc)} · ${matchTime(match.kickoffUtc)} UTC`;
+}
+
+function pickHomeMatches(fixtures: Match[]) {
+  // ONLY show live + upcoming — never show stale completed matches on homepage
+  const live = fixtures
+    .filter((f) => f.status === "live")
+    .sort((a, b) => new Date(a.kickoffUtc).getTime() - new Date(b.kickoffUtc).getTime());
+  const upcoming = fixtures
+    .filter((f) => f.status === "scheduled")
+    .sort((a, b) => new Date(a.kickoffUtc).getTime() - new Date(b.kickoffUtc).getTime());
+
+  return [...live, ...upcoming].slice(0, 8);
+}
+
 const routeCards = [
   {
     href: "/teams",
@@ -61,11 +117,14 @@ export default async function HomePage() {
       apiClient.fixtures(),
     ]);
 
-    const featuredFixture = fixtures[0];
-    if (featuredFixture) {
+    const predictionFixture =
+      fixtures.find((fixture) => fixture.status === "live") ??
+      fixtures.find((fixture) => fixture.status === "scheduled");
+    // Never predict for a completed match on the homepage
+    if (predictionFixture && predictionFixture.status !== "final") {
       featuredPrediction = await apiClient.predictMatch({
-        homeTeamId: featuredFixture.homeTeamId,
-        awayTeamId: featuredFixture.awayTeamId,
+        homeTeamId: predictionFixture.homeTeamId,
+        awayTeamId: predictionFixture.awayTeamId,
         includeLikelyScorers: true,
         includeModelNotes: false,
       });
@@ -78,7 +137,12 @@ export default async function HomePage() {
   }
 
   const groups = new Set(teams.map((team) => team.group).filter(Boolean));
-  const featuredFixture = fixtures[0];
+  const homeMatches = pickHomeMatches(fixtures);
+  // Only feature live or upcoming matches — never show a completed old match
+  const featuredFixture =
+    fixtures.find((f) => f.status === "live") ??
+    fixtures.find((f) => f.status === "scheduled");
+  const teamById = new Map(teams.map((team) => [team.id, team]));
   const homeTeam = featuredFixture
     ? teams.find((team) => team.id === featuredFixture.homeTeamId)
     : undefined;
@@ -179,6 +243,80 @@ export default async function HomePage() {
         </InfoCard>
       ) : null}
 
+      <section className="wc-panel rounded-[28px] p-5 wc-fade-up">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="wc-eyebrow text-xs font-semibold">Live & Recent Matches</p>
+            <h2 className="mt-2 text-2xl font-semibold">Scores on the board</h2>
+          </div>
+          <Link
+            href="/fixtures"
+            className="rounded-full border border-[var(--border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--secondary)] transition-opacity hover:opacity-75"
+          >
+            All fixtures
+          </Link>
+        </div>
+
+        <div className="mt-5 grid gap-3">
+          {homeMatches.length > 0 ? (
+            homeMatches.map((match) => {
+              const home = teamById.get(match.homeTeamId);
+              const away = teamById.get(match.awayTeamId);
+              const isLive = match.status === "live";
+              const isFinal = match.status === "final";
+
+              return (
+                <Link
+                  key={match.id}
+                  href={`/matches/${encodeURIComponent(match.id)}`}
+                  className="fixture-card wc-panel-muted grid gap-3 rounded-2xl px-4 py-3.5 transition-all hover:border-[var(--secondary)] hover:bg-[rgba(0,229,255,0.03)] sm:grid-cols-[1fr_auto_1fr] sm:items-center"
+                  style={isLive ? { borderColor: "rgba(248,113,113,0.36)" } : undefined}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    {home ? <TeamMark fifaCode={home.fifaCode} name={home.name} size="sm" /> : null}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{home?.name ?? match.homeTeamId.toUpperCase()}</p>
+                      <p className="wc-body text-[11px]">Home</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[rgba(7,13,31,0.72)] px-4 py-3 sm:block sm:min-w-[132px] sm:text-center">
+                    <p
+                      className="text-2xl font-black tabular-nums"
+                      style={{
+                        color: isLive ? "#f87171" : isFinal ? "var(--accent)" : "var(--secondary)",
+                        fontFamily: "var(--font-data)",
+                      }}
+                    >
+                      {scoreText(match)}
+                    </p>
+                    <p className="mt-1 flex items-center justify-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--foreground-soft)]">
+                      {isLive ? <span className="live-dot" /> : null}
+                      {matchStatusLabel(match)}
+                    </p>
+                  </div>
+
+                  <div className="flex min-w-0 items-center gap-3 sm:justify-end">
+                    <div className="min-w-0 sm:text-right">
+                      <p className="truncate text-sm font-semibold">{away?.name ?? match.awayTeamId.toUpperCase()}</p>
+                      <p className="wc-body text-[11px]">
+                        {stageLabel(match.stage)}
+                        {match.group ? ` · Group ${match.group}` : ""}
+                      </p>
+                    </div>
+                    {away ? <TeamMark fifaCode={away.fifaCode} name={away.name} size="sm" /> : null}
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            <div className="wc-panel-muted rounded-2xl p-4 text-sm text-[var(--foreground-soft)]">
+              No live or recently finished matches are loaded yet.
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* ── Image divider after hero ─────────────────────────────────── */}
       <div
         className="wc-img-banner wc-glass rounded-2xl"
@@ -254,7 +392,7 @@ export default async function HomePage() {
                 {homeTeam.name} vs {awayTeam.name}
               </h2>
               <p className="wc-body mt-2 text-sm">
-                {featuredFixture.stage.replaceAll("_", " ")}
+                {stageLabel(featuredFixture.stage)}
                 {featuredFixture.group ? ` • Group ${featuredFixture.group}` : ""}
                 {` • ${featuredFixture.venue}`}
               </p>
