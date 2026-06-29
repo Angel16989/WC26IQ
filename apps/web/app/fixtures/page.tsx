@@ -80,8 +80,9 @@ function FixtureRow({
   const awayFlagSrc = away ? getTeamFlagSvgPath(away.fifaCode) : null;
 
   return (
-    <div
-      className="fixture-card wc-panel-muted flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5"
+    <Link
+      href={`/matches/${encodeURIComponent(fixture.id)}`}
+      className="fixture-card wc-panel-muted flex flex-wrap items-center gap-3 rounded-2xl px-4 py-3.5 transition-all hover:border-[var(--secondary)] hover:bg-[rgba(0,229,255,0.03)]"
       style={isKnockout ? { borderColor: "rgba(211,243,64,0.2)", borderTopColor: "rgba(211,243,64,0.4)" } : undefined}
     >
       {/* Stage badge */}
@@ -147,7 +148,9 @@ function FixtureRow({
           {formatDate(fixture.kickoffUtc)}
         </span>
       )}
-    </div>
+      {/* View detail arrow */}
+      <span className="shrink-0 text-xs opacity-30 group-hover:opacity-80 transition-opacity" style={{ color: "var(--secondary)" }}>›</span>
+    </Link>
   );
 }
 
@@ -200,9 +203,9 @@ export default async function FixturesPage() {
   return (
     <div className="space-y-8">
       <PageHero
-        eyebrow="Fixtures"
-        title="Live match schedule — real scores, real results"
-        description="All 88 matches synced live from ESPN every 10 minutes. Completed group stage shown with real scores. Knockout bracket is separate."
+        eyebrow="All 104 Matches · Live Scores"
+        title="WC 2026 Fixtures — Click Any Match for Full Detail"
+        description="Real scores, goal scorers, match stats, pitch lineups. Synced from ESPN every 10 minutes. Click any row to see who scored, when, and full match stats."
         aside={
           <div className="wc-panel-muted rounded-3xl p-5 space-y-3">
             <p className="wc-data-label text-xs font-semibold">Quick Stats</p>

@@ -46,9 +46,9 @@ export default async function TeamsPage() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow="Teams route"
-        title="Live team profiles and strength inputs"
-        description="This page now reads directly from the backend `/teams` contract and reflects the active provider behind the API. Team strength, recent form, squad depth, and tournament grouping stay in the same analytics-first shape."
+        eyebrow="All 48 Nations · WC 2026"
+        title="Team Profiles — Strength, Form & Squad Depth"
+        description="Live data from ESPN + FIFA source. Click any team to see their full squad, fixtures, lineup, and group standing. Strength ratings powered by our Poisson DC formula."
         aside={
           <div className="wc-panel-muted rounded-3xl p-5">
             <p className="wc-data-label text-xs font-semibold">

@@ -62,4 +62,21 @@ export const apiClient = {
     }),
   knockout: () => request<KnockoutBracket>("/knockout"),
   scenarios: () => request<ScenariosResponse>("/scenarios"),
+  matchDetail: (id: string) => request<MatchDetail>(`/matches/${encodeURIComponent(id)}`),
 };
+
+// ── Match detail types ───────────────────────────────────────────────────
+export interface KeyEvent {
+  clock: string | null; eventType: string | null;
+  teamName: string | null; teamId: string | null;
+  playerName: string | null; text: string | null;
+}
+export interface StatRow { label: string; home: string | null; away: string | null; }
+export interface TeamMatchInfo { id: string; name: string; fifaCode: string; score: number | null; }
+export interface LineupPlayer { id: string; name: string; position: string; club: string; goalThreat: number; likelyStarter: boolean; }
+export interface MatchDetail {
+  matchId: string; stage: string; status: string; kickoffUtc: string | null; venue: string | null;
+  home: TeamMatchInfo | null; away: TeamMatchInfo | null;
+  keyEvents: KeyEvent[]; stats: StatRow[]; goals: KeyEvent[];
+  homeLineup: LineupPlayer[]; awayLineup: LineupPlayer[];
+}

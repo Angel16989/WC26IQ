@@ -5,6 +5,7 @@ from app.core.settings import get_settings
 from app.routes.admin import router as admin_router
 from app.routes.fixtures import router as fixtures_router
 from app.routes.knockout import router as knockout_router
+from app.routes.matches import router as matches_router
 from app.routes.health import router as health_router
 from app.routes.predict import router as predict_router
 from app.routes.simulate import router as simulate_router
@@ -38,6 +39,7 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(admin_router)
 app.include_router(knockout_router)
+app.include_router(matches_router)
 app.include_router(teams_router)
 app.include_router(fixtures_router)
 app.include_router(predict_router)

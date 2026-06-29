@@ -96,9 +96,9 @@ export default async function HomePage() {
     <div className="space-y-6">
       {/* ── Hero with 3D Globe ───────────────────────────────────────── */}
       <PageHero
-        eyebrow="World Cup Portal"
-        title="A sharper World Cup home for teams, fixtures, forecasts, and tournament paths"
-        description="Live analytics, match predictions, and tournament simulation — all connected to the backend in one command-center view."
+        eyebrow="FIFA World Cup 2026 · Live Intelligence"
+        title="Real scores, real squads, real predictions — all 48 teams, 104 matches"
+        description="ESPN live sync every 10 min · 1,246 real players · DC-corrected Poisson predictions · Match detail with goals, stats & lineups."
         aside={
           <div className="space-y-4">
             {/* 3D Globe scene */}
@@ -367,18 +367,20 @@ export default async function HomePage() {
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <InfoCard title="World Cup Theme Direction">
+        <InfoCard title="⚡ Knockout Stage — Live Now">
           <p>
-            The site is moving toward one unified tournament command-center style:
-            dark stadium lighting, clearer team identity, and consistent analytics surfaces
-            across home, teams, fixtures, predictions, and simulator.
+            The Round of 32 has started. South Africa 0–1 Canada is the first
+            completed knockout result. Click <strong>Knockout</strong> in the nav
+            to see the full bracket, real scores, and our 5 winner scenarios
+            powered by the Dixon-Coles Poisson formula.
           </p>
         </InfoCard>
-        <InfoCard title="Backend Integration Status">
+        <InfoCard title="🤖 Prediction Engine">
           <p>
-            The backend already serves health, teams, fixtures, match prediction, and
-            tournament simulation endpoints. The next frontend pass is about making every
-            page use those endpoints cleanly instead of feeling like separate demos.
+            Probabilities use a DC-corrected Poisson model: team strength (52%),
+            form index (22%), squad depth (16%), recent results (10%). 8,000
+            Monte Carlo simulations determine the 5 championship scenarios shown
+            on the Knockout page.
           </p>
         </InfoCard>
       </div>
