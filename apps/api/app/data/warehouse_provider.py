@@ -113,6 +113,16 @@ def _map_status(raw_status: str | None) -> Literal["scheduled", "live", "final",
     return "scheduled"
 
 
+def _read_score(raw: dict, key: str) -> int | None:
+    value = raw.get(key)
+    if value in (None, ""):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 class WarehouseDataProvider:
     """Reads from the wciq_warehouse Postgres data lake via Tailscale."""
 
@@ -243,6 +253,8 @@ class WarehouseDataProvider:
                 if kickoff else "1970-01-01T00:00:00Z"
             )
             status = _map_status(raw.get("status") or status_raw)
+            home_score = _read_score(raw, "home_score")
+            away_score = _read_score(raw, "away_score")
             venue_str = (
                 f"{venue}, {city}".strip(", ")
                 if venue else (city or "TBD")
@@ -263,6 +275,8 @@ class WarehouseDataProvider:
                     stage=stage,  # type: ignore[arg-type]
                     group=group_name,
                     status=status,
+                    homeScore=home_score,
+                    awayScore=away_score,
                 )
             )
         return fixtures

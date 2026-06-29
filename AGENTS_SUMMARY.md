@@ -1944,3 +1944,247 @@ PY`
 ## When did you do it
 
 - 2026-06-25 22:29:50 AEST
+
+## VOID Slack quiet mode and Gemma polish
+
+## What you did
+
+- Found why VOID was sending too many Slack messages.
+- Changed VOID so scheduled Slack output is one polished daily overnight message.
+- Kept manual Slack DMs working when you directly talk to VOID.
+- Downloaded `gemma3:4b` on the tower and used it as the final polish model.
+
+## How you did it
+
+- Turned off the extra "working on it" Slack notice by default.
+- Made the old morning standup timer opt-in instead of enabled by default.
+- Added a daily digest polish step that rewrites the overnight update into a smoother Slack message.
+- Added a tower helper script that applies quiet mode, pulls Gemma, updates env settings, disables extra burst workers, and keeps the night-shift timer active.
+- Applied the same quiet-mode changes on the live tower at `/home/theimp/WCIQ_VOID`.
+
+## What you changed
+
+- Modified `integrations/VOID/src/void_core/void_socket_bot.py`.
+- Modified `integrations/VOID/src/void_core/jobpulse_pm.py`.
+- Modified `integrations/VOID/scripts/install_void_timer.sh`.
+- Added `integrations/VOID/scripts/apply_void_daily_digest_mode.sh`.
+- Modified `integrations/VOID/runtime.env.example`.
+- Modified `integrations/VOID/slack.env.example`.
+- Modified `integrations/VOID/README.md`.
+- Updated live tower `.secrets/runtime.env` and `.secrets/slack.env` non-secret VOID settings.
+
+## How to verify it
+
+- Local syntax checks:
+  `python3 -m py_compile integrations/VOID/src/void_core/jobpulse_pm.py integrations/VOID/src/void_core/void_socket_bot.py`
+- Local shell checks:
+  `bash -n integrations/VOID/scripts/apply_void_daily_digest_mode.sh integrations/VOID/scripts/install_void_timer.sh`
+- Tower model check:
+  `ollama list` should show `gemma3:4b`.
+- Tower timer check:
+  `systemctl --user list-timers --all "void-*"` should show `void-night-shift.timer`, not `void-standup.timer`.
+- Tower service check:
+  `systemctl --user is-active void-socket.service void-research.service void-dashboard.service void-night-shift.timer void-standup.timer`
+  should show socket, research, dashboard, and night-shift active, with standup inactive.
+
+## When did you do it
+
+- 2026-06-29 20:05:05 AEST
+
+## Data freshness pipeline and daily VOID check
+
+## What you did
+
+- Added a backend data freshness checker for WorldCupIQ.
+- Added an admin API endpoint that Claude's frontend can call to see whether the current data is fresh, stale, or unknown.
+- Added a daily script that writes JSON and Markdown freshness reports.
+- Connected VOID's daily overnight message to include one short data freshness section.
+- Deployed and verified the backend checker on the tower.
+
+## How you did it
+
+- Used the `rezarahiminia/worldcup2026` repo as the pattern: keep data import/update logic separate, store the current dataset, and let the API serve from that current dataset.
+- Built a small FastAPI service that checks teams, players, fixtures, kickoff times, stale scheduled matches, and live-score configuration.
+- Kept second-by-second live-score support honest: the config has a 3-second target, but the report stays stale until an approved live source is configured.
+- Made VOID run the freshness script during the existing once-daily night-shift timer instead of sending extra Slack messages.
+
+## What you changed
+
+- Added `apps/api/app/schemas/freshness.py`.
+- Added `apps/api/app/services/data_freshness.py`.
+- Added `apps/api/scripts/check_data_freshness.py`.
+- Added `apps/api/tests/test_data_freshness.py`.
+- Updated `apps/api/app/routes/admin.py`.
+- Updated `apps/api/app/core/settings.py`.
+- Updated `apps/api/app/data/repository.py`.
+- Updated `apps/api/tests/conftest.py`.
+- Updated `packages/shared/src/api.ts`.
+- Updated `.env.example` and `apps/api/.env.example`.
+- Updated `docs/API_CONTRACTS.md` and `docs/ARCHITECTURE.md`.
+- Updated `.gitignore` to ignore generated `var/` reports.
+- Updated `integrations/VOID/src/void_core/jobpulse_pm.py`.
+- Updated `integrations/VOID/runtime.env.example` and `integrations/VOID/slack.env.example`.
+
+## How to verify it
+
+- Run backend tests:
+  `apps/api/.venv/bin/python -m pytest -q apps/api/tests`
+- Run backend lint:
+  `apps/api/.venv/bin/python -m ruff check apps/api`
+- Run the freshness script:
+  `apps/api/.venv/bin/python apps/api/scripts/check_data_freshness.py --output-dir var/data-freshness`
+- Call the API endpoint while the API is running:
+  `curl http://127.0.0.1:8000/admin/data-freshness`
+- On the tower, check the daily VOID timer:
+  `systemctl --user list-timers --all | grep void-night-shift`
+
+## When did you do it
+
+- 2026-06-29 20:25:43 AEST
+
+## Homepage live and recent score display
+
+## What you did
+
+- Updated the homepage so it shows live matches first and recently finished matches next.
+- Added a clear score panel in the middle of each homepage match row.
+- Kept the prediction card separate by using the next scheduled match when possible.
+- Updated the backend fixture contract so real score fields can come through `/fixtures`.
+
+## How you did it
+
+- Added optional `homeScore` and `awayScore` fields to the shared match model.
+- Read `home_score` and `away_score` from the warehouse fixture raw data and exposed them as API fields.
+- Added homepage helper logic that sorts matches into live, recently finished, and fallback upcoming matches.
+- Rendered compact match rows with home team, score/status, away team, and a link to match detail.
+
+## What you changed
+
+- Modified `apps/web/app/page.tsx`.
+- Modified `packages/shared/src/types.ts`.
+- Modified `apps/api/app/schemas/common.py`.
+- Modified `apps/api/app/data/warehouse_provider.py`.
+- Updated this summary in `AGENTS_SUMMARY.md`.
+
+## How to verify it
+
+- Run API tests:
+  `apps/api/.venv/bin/python -m pytest -q apps/api/tests`
+- Run targeted API lint:
+  `apps/api/.venv/bin/python -m ruff check apps/api/app/schemas/common.py apps/api/app/data/warehouse_provider.py`
+- Run the web build:
+  `npm run build:web`
+- Run targeted homepage lint:
+  `cd apps/web && npx eslint app/page.tsx --max-warnings=0`
+- Start the apps and open `/`; the homepage should show live/recent match rows with scores before the featured prediction card.
+
+## When did you do it
+
+- 2026-06-30 07:35:22 AEST
+
+## Mobile Teams page visibility fix
+
+## What you did
+
+- Fixed the Teams page so phone users can see the actual team cards immediately.
+- Put the team list before the coverage summary on mobile.
+- Removed the scroll-triggered animation wrapper from the team cards so they cannot stay invisible on mobile browsers.
+- Deployed the fix to the tower and restarted the WorldCupIQ web service.
+
+## How you did it
+
+- Reworked `apps/web/app/teams/page.tsx` into a mobile-first layout.
+- Rendered the team cards directly in a responsive grid instead of inside `StaggerList`.
+- Verified the backend still returns 48 teams.
+- Rebuilt the web app on the tower and checked the public Cloudflare tunnel response.
+
+## What you changed
+
+- Modified `apps/web/app/teams/page.tsx`.
+- Updated this summary in `AGENTS_SUMMARY.md`.
+
+## How to verify it
+
+- Run targeted Teams page lint:
+  `cd apps/web && npx eslint app/teams/page.tsx --max-warnings=0`
+- Run the web build:
+  `npm run build:web`
+- Check the API:
+  `curl http://127.0.0.1:3000/api/teams`
+- Open `/teams` on mobile; the page should show a `Teams loaded` / `All nations` section with team cards.
+- Public tunnel check used:
+  `https://deviation-pubs-fresh-leaves.trycloudflare.com/teams`
+
+## When did you do it
+
+- 2026-06-30 07:40:23 AEST
+
+## Individual team player score removal
+
+## What you did
+
+- Removed the numeric per-player score from individual team pages.
+- Removed the small per-player goal-threat bar beside each player.
+- Kept player names, positions, avatars, and clubs visible.
+- Deployed the change to the tower and restarted the WorldCupIQ web service.
+
+## How you did it
+
+- Edited the player card markup in `apps/web/app/teams/[id]/page.tsx`.
+- Deleted the `player.goalThreat.toFixed(2)` display and its progress bar.
+- Rebuilt the web app locally and on the tower.
+- Checked the public Cape Verde page to confirm `0.58` and `goalThreat` are gone.
+
+## What you changed
+
+- Modified `apps/web/app/teams/[id]/page.tsx`.
+- Updated this summary in `AGENTS_SUMMARY.md`.
+
+## How to verify it
+
+- Run targeted team-detail lint:
+  `cd apps/web && npx eslint 'app/teams/[id]/page.tsx' --max-warnings=0`
+- Run the web build:
+  `npm run build:web`
+- Open an individual team page such as `/teams/cpv`; players should show without numeric scores beside them.
+
+## When did you do it
+
+- 2026-06-30 07:44:45 AEST
+
+## Intro animation music replacement
+
+## What you did
+
+- Removed the generated synthetic intro music from the beginning animation.
+- Switched the intro sound to the downloaded `wc_anthem.mp3` track.
+- Kept the existing intro visuals and sound toggle.
+- Cleaned up the intro sparks and phase timer so the component passes targeted lint.
+- Deployed the change to the tower and restarted the WorldCupIQ web service.
+
+## How you did it
+
+- Replaced the Web Audio oscillator score with a normal `HTMLAudioElement`.
+- Set the intro audio source to `/audio/wc_anthem.mp3`.
+- Made spark positions deterministic instead of using `Math.random()` during render.
+- Simplified the phase timer so it does not recursively reference itself.
+- Verified the public tunnel can serve the MP3.
+
+## What you changed
+
+- Modified `apps/web/components/landing-intro.tsx`.
+- Updated this summary in `AGENTS_SUMMARY.md`.
+
+## How to verify it
+
+- Run targeted intro lint:
+  `cd apps/web && npx eslint components/landing-intro.tsx --max-warnings=0`
+- Run the web build:
+  `npm run build:web`
+- Check the public audio file:
+  `curl -I https://deviation-pubs-fresh-leaves.trycloudflare.com/audio/wc_anthem.mp3`
+- Open the home page in a fresh session and tap/click the intro to start the new song.
+
+## When did you do it
+
+- 2026-06-30 07:48:41 AEST

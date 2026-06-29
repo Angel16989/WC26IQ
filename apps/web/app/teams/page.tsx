@@ -5,7 +5,6 @@ import { InfoCard } from "@/components/info-card";
 import { PageHero } from "@/components/page-hero";
 import { TeamMark } from "@/components/team-mark";
 import { CountUp } from "@/components/count-up";
-import { StaggerList } from "@/components/stagger-list";
 import { apiClient } from "@/lib/api/client";
 
 function buildConfederationSummary(teams: Team[]) {
@@ -99,7 +98,80 @@ export default async function TeamsPage() {
       ) : null}
 
       {!errorMessage && teams.length > 0 ? (
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <section className="wc-panel rounded-3xl p-4 sm:p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="wc-eyebrow text-xs font-semibold">Teams loaded</p>
+                <h2 className="mt-2 text-lg font-semibold sm:text-xl">All nations</h2>
+              </div>
+              <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--secondary)]">
+                {teams.length} teams
+              </span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {teams.map((team) => (
+                <Link
+                  key={team.id}
+                  href={`/teams/${team.id}`}
+                  className="group block wc-panel-muted rounded-2xl px-4 py-4 transition-all hover:border-[var(--secondary)] hover:bg-[rgba(0,229,255,0.04)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <TeamMark fifaCode={team.fifaCode} name={team.name} size="sm" />
+                      <div className="min-w-0">
+                        <div className="flex min-w-0 flex-wrap items-center gap-2">
+                          <h3 className="truncate text-base font-semibold text-[var(--foreground)] transition-colors group-hover:text-[var(--secondary)]">
+                            {team.name}
+                          </h3>
+                          <span className="wc-pill rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em]">
+                            {team.fifaCode}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-[11px] uppercase tracking-[0.12em] text-[var(--foreground-soft)]">
+                          {team.confederation}
+                          {team.group ? ` • Group ${team.group}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-lg text-[var(--secondary)] opacity-50 transition-opacity group-hover:opacity-100">
+                      ›
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <div>
+                      <p className="wc-data-label text-[10px] font-semibold">Strength</p>
+                      <p className="wc-data-value mt-1 text-lg font-semibold">
+                        {team.strengthRating.toFixed(1)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="wc-data-label text-[10px] font-semibold">Form</p>
+                      <p className="wc-data-value mt-1 text-lg font-semibold">
+                        {team.formIndex.toFixed(1)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="wc-data-label text-[10px] font-semibold">Squad</p>
+                      <p className="wc-data-value mt-1 text-lg font-semibold">
+                        {team.squadStrength.toFixed(1)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="wc-body mt-3 text-xs">
+                    Last five:{" "}
+                    <span className="font-medium text-[var(--foreground)]">
+                      {team.lastFiveResults.join(" ")}
+                    </span>
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+
           <InfoCard title="Coverage summary">
             <div className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -142,66 +214,6 @@ export default async function TeamsPage() {
                 </div>
               </div>
             </div>
-          </InfoCard>
-
-          <InfoCard title="Team signals">
-            <StaggerList className="space-y-3">
-              {teams.map((team) => (
-                <Link
-                  key={team.id}
-                  href={`/teams/${team.id}`}
-                  className="group block wc-panel-muted rounded-2xl px-4 py-4 transition-all hover:border-[var(--secondary)] hover:bg-[rgba(0,229,255,0.04)]"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <TeamMark fifaCode={team.fifaCode} name={team.name} size="sm" />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-base font-semibold text-[var(--foreground)] group-hover:text-[var(--secondary)] transition-colors">
-                            {team.name}
-                          </h3>
-                          <span className="wc-pill rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-[0.16em]">
-                            {team.fifaCode}
-                          </span>
-                        </div>
-                        <p className="mt-0.5 text-xs uppercase tracking-[0.14em] text-[var(--foreground-soft)]">
-                          {team.confederation}
-                          {team.group ? ` • Group ${team.group}` : ""}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="wc-body text-sm">
-                      Last five:{" "}
-                      <span className="font-medium text-[var(--foreground)]">
-                        {team.lastFiveResults.join(" ")}
-                      </span>
-                    </p>
-                  </div>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div>
-                      <p className="wc-data-label text-xs font-semibold">Strength</p>
-                      <p className="wc-data-value mt-1 text-xl font-semibold">
-                        {team.strengthRating.toFixed(1)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="wc-data-label text-xs font-semibold">Form</p>
-                      <p className="wc-data-value mt-1 text-xl font-semibold">
-                        {team.formIndex.toFixed(1)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="wc-data-label text-xs font-semibold">Squad Depth</p>
-                      <p className="wc-data-value mt-1 text-xl font-semibold">
-                        {team.squadStrength.toFixed(1)}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </StaggerList>
           </InfoCard>
         </div>
       ) : null}

@@ -69,3 +69,33 @@ export interface WorldCupDataset {
   players: Player[];
   fixtures: Match[];
 }
+
+export type DataFreshnessStatus = "fresh" | "stale" | "unknown";
+
+export type DataFreshnessSeverity = "info" | "warning" | "critical";
+
+export interface DataFreshnessIssue {
+  severity: DataFreshnessSeverity;
+  code: string;
+  message: string;
+  recommendation: string;
+  fixtureId?: string | null;
+  source?: string | null;
+}
+
+export interface DataFreshnessReport {
+  status: DataFreshnessStatus;
+  checkedAtUtc: string;
+  provider: string;
+  liveScoreMode: string;
+  liveScoreTargetIntervalSeconds: number;
+  teams: number;
+  players: number;
+  fixtures: number;
+  staleFixtures: number;
+  liveWindowFixtures: number;
+  nextKickoffUtc: string | null;
+  latestKickoffUtc: string | null;
+  issues: DataFreshnessIssue[];
+  nextActions: string[];
+}

@@ -48,6 +48,8 @@ class Match(ApiModel):
     ]
     group: str | None = None
     status: Literal["scheduled", "live", "final", "postponed"]
+    homeScore: int | None = None
+    awayScore: int | None = None
 
 
 class GoalProjection(ApiModel):
@@ -78,4 +80,3 @@ class TeamProbability(ApiModel):
     teamId: str
     teamName: str
     probability: float
-

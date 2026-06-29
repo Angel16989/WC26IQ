@@ -44,6 +44,8 @@ export interface Match {
   stage: TournamentStage;
   group?: string;
   status: MatchStatus;
+  homeScore?: number | null;
+  awayScore?: number | null;
 }
 
 export interface Prediction {

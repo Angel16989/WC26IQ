@@ -15,6 +15,41 @@ Example response:
 }
 ```
 
+## `GET /admin/data-freshness`
+Returns a freshness report for the currently loaded football dataset. This is the safety check that tells the app and VOID whether teams, players, fixtures, and live-score coverage look current enough to trust.
+
+Example response:
+```json
+{
+  "status": "stale",
+  "checkedAtUtc": "2026-06-29T10:00:00Z",
+  "provider": "mock",
+  "liveScoreMode": "not_configured",
+  "liveScoreTargetIntervalSeconds": 3,
+  "teams": 8,
+  "players": 64,
+  "fixtures": 6,
+  "staleFixtures": 6,
+  "liveWindowFixtures": 0,
+  "nextKickoffUtc": null,
+  "latestKickoffUtc": "2026-06-21T02:00:00Z",
+  "issues": [
+    {
+      "severity": "critical",
+      "code": "past_scheduled_fixture",
+      "message": "A fixture is well past kickoff but is still marked scheduled.",
+      "recommendation": "Refresh match status, score, and result data from an approved source.",
+      "fixtureId": "a1"
+    }
+  ],
+  "nextActions": [
+    "Refresh fixture status and score fields from the latest approved source."
+  ]
+}
+```
+
+The checker is intentionally strict. If `WORLDCUPIQ_LIVE_SCORE_MODE=not_configured`, the API should not claim second-by-second live scores.
+
 ## `GET /teams`
 Returns the list of mock teams.
 
@@ -90,4 +125,5 @@ Example response highlights:
 ## Notes
 - The current API is built on mock data only.
 - Prediction responses use the staged master formula. They are still not production-calibrated until source-backed match history, Dixon-Coles correction, and calibration metrics are added.
+- Data freshness is monitored separately from prediction quality. A prediction can be mathematically valid and still use stale source data; check `/admin/data-freshness` before presenting data as current.
 - The TypeScript contracts in `packages/shared` and the Pydantic schemas in `apps/api/app/schemas` should stay aligned as the API evolves.

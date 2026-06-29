@@ -18,6 +18,11 @@ The `data/` folder is the single source of mock truth for now. Keeping it at the
 ## Optional Database
 The `database/schema.sql` file documents the optional PostgreSQL runtime schema. The API only writes to it when `WORLDCUPIQ_DATABASE_URL` is configured; local mock mode still works without a database.
 
+## Data Freshness
+WorldCupIQ has a backend freshness checker at `GET /admin/data-freshness` and a CLI pipeline at `apps/api/scripts/check_data_freshness.py`. This follows the same broad pattern as open World Cup API projects that separate seeded tournament data, cached public reads, and live updater processes. In our app, the first step is a strict freshness report: it flags past scheduled fixtures, live-window fixtures, empty datasets, mock-provider mode, and missing live-score configuration.
+
+The checker does not pretend data is live. Second-by-second match scores require an approved live feed and matching score fields in the API contract before the frontend should display live-score claims.
+
 ## Prediction Engine
 The current prediction logic is deterministic and explainable on purpose. It uses the local data provider fields available today, then marks deeper layers like Dixon-Coles correction, Brier/log-loss calibration, and source-backed player availability as pending until the historical match and squad datasets are clean.
 

@@ -285,21 +285,6 @@ export default async function TeamDetailPage({ params }: PageProps) {
                             </p>
                             <p className="wc-body truncate text-xs">{player.club || "International"}</p>
                           </div>
-                          {/* Goal threat bar */}
-                          <div className="flex flex-col items-end gap-1">
-                            <p className="text-xs font-semibold" style={{ color: accent }}>
-                              {player.goalThreat.toFixed(2)}
-                            </p>
-                            <div className="h-1 w-12 overflow-hidden rounded-full bg-[rgba(35,41,60,0.9)]">
-                              <div
-                                className="h-full rounded-full"
-                                style={{
-                                  width: `${Math.min(100, player.goalThreat * 100)}%`,
-                                  background: `linear-gradient(90deg, transparent, ${accent})`,
-                                }}
-                              />
-                            </div>
-                          </div>
                         </div>
                       ))}
                     </StaggerList>
