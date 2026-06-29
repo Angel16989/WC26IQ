@@ -28,106 +28,62 @@ const LEGENDS = [
 
 const WC_YEARS = ["1986","1990","1994","1998","2002","2006","2010","2014","2018","2022"];
 const BKGS     = ["/images/stadium1.jpg","/images/crowd1.jpg","/images/stadium_night.jpg","/images/stadium2.jpg"];
+const SPARK_COLOURS = ["#d3f340", "#00e5ff", "#ffffff", "#ff007f", "#ffd700"];
 
-/* ══════════════════════════════════════════════════════════════════════
-   WEB AUDIO — cinematic score, ONLY synth (no MP3 blending)
-   ══════════════════════════════════════════════════════════════════════ */
-function buildCinemaScore() {
-  const ctx    = new AudioContext();
-  const master = ctx.createGain();
-  master.gain.value = 0.72;
-  master.connect(ctx.destination);
-
-  const sin = (f: number, w: number, d: number, v = 1) => {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.setValueAtTime(f, w);
-    o.frequency.exponentialRampToValueAtTime(f * 0.3, w + d);
-    g.gain.setValueAtTime(v, w); g.gain.exponentialRampToValueAtTime(0.001, w + d);
-    o.connect(g); g.connect(master); o.start(w); o.stop(w + d + 0.05);
-  };
-
-  const noise = (w: number, d: number, v = 0.45) => {
-    const buf = ctx.createBuffer(1, ctx.sampleRate * d, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const src = ctx.createBufferSource(), lpf = ctx.createBiquadFilter(), g = ctx.createGain();
-    src.buffer = buf; lpf.type = "lowpass"; lpf.frequency.value = 180;
-    g.gain.setValueAtTime(v, w); g.gain.exponentialRampToValueAtTime(0.001, w + d);
-    src.connect(lpf); lpf.connect(g); g.connect(master); src.start(w); src.stop(w + d + 0.05);
-  };
-
-  const brass = (f: number, w: number, d: number, v = 0.4) => {
-    [1, 2, 3, 5].forEach(h => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sawtooth"; o.frequency.value = f * h; o.detune.value = (Math.random()-0.5)*14;
-      g.gain.setValueAtTime(0, w); g.gain.linearRampToValueAtTime(v/h, w+0.07);
-      g.gain.setValueAtTime(v/h, w+d-0.1); g.gain.linearRampToValueAtTime(0, w+d);
-      o.connect(g); g.connect(master); o.start(w); o.stop(w+d+0.05);
-    });
-  };
-
-  const crowd = (w: number, d: number) => {
-    for (let i = 0; i < 14; i++) {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sine"; o.frequency.value = 200 + Math.random()*600;
-      o.frequency.linearRampToValueAtTime(700 + Math.random()*800, w+d);
-      g.gain.setValueAtTime(0, w + i*0.04); g.gain.linearRampToValueAtTime(0.055, w+d*0.5); g.gain.linearRampToValueAtTime(0.1, w+d);
-      o.connect(g); g.connect(master); o.start(w+i*0.04); o.stop(w+d+0.1);
-    }
-  };
-
-  const t = ctx.currentTime + 0.05;
-
-  // Heartbeat (phases 0-1)
-  for (let i = 0; i < 5; i++) { sin(58, t+i*1.1, 0.28, 0.85); sin(50, t+i*1.1+0.30, 0.20, 0.65); }
-
-  // Legends phase drone (phase 2-3)
-  sin(38, t+5.0, 2.8, 0.32);
-
-  // Year montage impacts
-  [7.0,7.22,7.44,7.66,7.88,8.10,8.32,8.54,8.76,8.98].forEach(d => noise(t+d, 0.09, 0.6));
-
-  // Tension riser (phase 4)
-  sin(95, t+9.5, 2.2, 0.22); sin(140, t+10.4, 1.6, 0.18);
-
-  // FIFA WORLD CUP slam (phase 5)
-  noise(t+12.2, 0.16, 0.85); sin(70, t+12.2, 0.85, 1.1);
-  brass(146.83, t+12.5, 1.0); brass(174.61, t+13.1, 1.0);
-
-  // 2026 EARTHQUAKE (phase 6)
-  noise(t+14.5, 0.20, 1.1);
-  sin(42, t+14.5, 1.8, 1.6); sin(28, t+14.55, 2.2, 1.3);
-  brass(261.63, t+14.7, 1.3, 0.75); brass(329.63, t+15.2, 1.1, 0.65);
-  crowd(t+15.0, 4.5);
-
-  // Resolve (phases 8-9)
-  [261.63,329.63,392.00,523.25].forEach((f,i) => brass(f, t+18.0, 3.0, 0.42-i*0.07));
-  sin(50, t+18.0, 3.2, 0.48);
-
-  return ctx;
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 999) * 10000;
+  return x - Math.floor(x);
 }
 
+const SPARKS = Array.from({ length: 30 }, (_, i) => ({
+  left: 5 + seededRandom(i + 1) * 90,
+  delay: seededRandom(i + 31) * 4,
+  duration: 3 + seededRandom(i + 61) * 4,
+  size: 1.2 + seededRandom(i + 91) * 2.5,
+  colour: SPARK_COLOURS[Math.floor(seededRandom(i + 121) * SPARK_COLOURS.length)],
+}));
+
+/* ══════════════════════════════════════════════════════════════════════
+   WEB AUDIO — real intro track, no generated synth layer
+   ══════════════════════════════════════════════════════════════════════ */
+const INTRO_TRACK = "/audio/wc_anthem.mp3";
+
 function useAudio() {
-  const ctxRef   = useRef<AudioContext | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [muted,   setMuted]   = useState(false);
   const [started, setStarted] = useState(false);
 
   const start = useCallback(() => {
     if (started) return;
     setStarted(true);
-    try { ctxRef.current = buildCinemaScore(); } catch {}
+    try {
+      const track = new Audio(INTRO_TRACK);
+      track.volume = 0.78;
+      track.preload = "auto";
+      audioRef.current = track;
+      void track.play();
+    } catch {}
   }, [started]);
 
   const toggle = useCallback(() => {
     if (!started) { start(); return; }
-    const ctx = ctxRef.current;
-    if (!ctx) return;
-    if (ctx.state === "running") { ctx.suspend().catch(()=>{}); setMuted(true); }
-    else                         { ctx.resume().catch(()=>{});  setMuted(false); }
+    const track = audioRef.current;
+    if (!track) return;
+    if (track.paused) {
+      void track.play();
+      setMuted(false);
+    } else {
+      track.pause();
+      setMuted(true);
+    }
   }, [started, start]);
 
   const stop = useCallback(() => {
-    try { ctxRef.current?.close(); } catch {}
+    const track = audioRef.current;
+    if (!track) return;
+    track.pause();
+    track.currentTime = 0;
+    audioRef.current = null;
   }, []);
 
   useEffect(() => () => stop(), [stop]);
@@ -162,21 +118,14 @@ function Reveal({ text, delay=0, style={} }: { text:string; delay?:number; style
 function Sparks() {
   return (
     <div style={{ position:"absolute",inset:0,pointerEvents:"none",overflow:"hidden" }} aria-hidden>
-      {Array.from({length:30},(_,i) => {
-        const l  = 5 + Math.random()*90;
-        const d  = Math.random()*4;
-        const dur= 3 + Math.random()*4;
-        const s  = 1.2 + Math.random()*2.5;
-        const c  = ["#d3f340","#00e5ff","#ffffff","#ff007f","#ffd700"][Math.floor(Math.random()*5)];
-        return (
-          <div key={i} style={{
-            position:"absolute", bottom:"-8px", left:`${l}%`,
-            width:s, height:s*4, borderRadius:"50%",
-            background:c, boxShadow:`0 0 ${s*3}px ${c}`,
-            animation:`sparkRise ${dur}s ease-in ${d}s infinite`, opacity:0,
-          }} />
-        );
-      })}
+      {SPARKS.map((spark, i) => (
+        <div key={i} style={{
+          position:"absolute", bottom:"-8px", left:`${spark.left}%`,
+          width:spark.size, height:spark.size*4, borderRadius:"50%",
+          background:spark.colour, boxShadow:`0 0 ${spark.size*3}px ${spark.colour}`,
+          animation:`sparkRise ${spark.duration}s ease-in ${spark.delay}s infinite`, opacity:0,
+        }} />
+      ))}
     </div>
   );
 }
@@ -189,23 +138,21 @@ export function LandingIntro({ onEnter }: { onEnter:()=>void }) {
   const [bgIdx,    setBgIdx]    = useState(0);
   const [yearIdx,  setYearIdx]  = useState(0);
   const [legIdx,   setLegIdx]   = useState(0);
-  const [impact,   setImpact]   = useState(false);
+  // impact flash removed — was jarring
   const timer  = useRef<ReturnType<typeof setTimeout>|null>(null);
   const audio  = useAudio();
 
   const advance = useCallback((next:Phase) => {
     if (timer.current) clearTimeout(timer.current);
     setPhase(next);
-    if (next < 9) {
-      const nn = (next+1) as Phase;
-      timer.current = setTimeout(() => advance(nn), TIMING[nn]-TIMING[next]);
-    }
   }, []);
 
   useEffect(() => {
-    timer.current = setTimeout(() => advance(1), TIMING[1]);
+    if (phase >= 9) return;
+    const next = (phase + 1) as Phase;
+    timer.current = setTimeout(() => advance(next), TIMING[next] - TIMING[phase]);
     return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [advance]);
+  }, [advance, phase]);
 
   // Cycle backgrounds
   useEffect(() => {
@@ -229,20 +176,9 @@ export function LandingIntro({ onEnter }: { onEnter:()=>void }) {
     if (phase !== 3) return;
     const ids: ReturnType<typeof setTimeout>[] = [];
     WC_YEARS.forEach((_,i) => {
-      ids.push(setTimeout(() => {
-        setYearIdx(i); setImpact(true);
-        setTimeout(() => setImpact(false), 100);
-      }, i * 240));
+      ids.push(setTimeout(() => setYearIdx(i), i * 240));
     });
     return () => ids.forEach(clearTimeout);
-  }, [phase]);
-
-  // 2026 impact flash (phase 6)
-  useEffect(() => {
-    if (phase !== 6) return;
-    setImpact(true);
-    const id = setTimeout(() => setImpact(false), 200);
-    return () => clearTimeout(id);
   }, [phase]);
 
   const handleEnter = useCallback(() => {
@@ -321,11 +257,7 @@ export function LandingIntro({ onEnter }: { onEnter:()=>void }) {
           transition:"background 1.4s ease",
         }} />
 
-        {/* White impact flash */}
-        <div style={{
-          position:"absolute",inset:0,background:"#fff",zIndex:15,
-          opacity:impact?.9:0,transition:impact?"none":"opacity .35s ease",pointerEvents:"none",
-        }} />
+
 
         {/* Scan flash */}
         {vis(2) && (
