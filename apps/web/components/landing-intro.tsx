@@ -195,8 +195,8 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
   const [phase, setPhase] = useState<Phase>(0);
   const [bgIdx, setBgIdx] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [audioReady, setAudioReady] = useState(false);
-  const audioRef = useRef<ReturnType<typeof createAudioEngine> | null>(null);
+  const [musicStarted, setMusicStarted] = useState(false);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
   const phaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const advance = useCallback((next: Phase) => {
@@ -227,27 +227,53 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
   const handleEnter = useCallback(() => {
     sessionStorage.setItem("wciq_intro_seen", "1");
     setPhase(10);
+    if (musicRef.current) {
+      musicRef.current.pause();
+    }
     setTimeout(onEnter, 900);
   }, [onEnter]);
 
-  const handleAudioStart = useCallback(() => {
-    if (audioReady) return;
+  // Start real HTML5 audio on first user gesture
+  const startMusic = useCallback(() => {
+    if (musicStarted) return;
+    setMusicStarted(true);
     try {
-      audioRef.current = createAudioEngine();
-      if (!muted) audioRef.current.playCinematicIntro();
-      setAudioReady(true);
+      const audio = new Audio("/audio/wc_anthem.mp3");
+      audio.loop = true;
+      audio.volume = 0.55;
+      audio.muted = false;
+      musicRef.current = audio;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // autoplay blocked — user must click mute button to start
+          setMusicStarted(false);
+        });
+      }
     } catch {}
-  }, [audioReady, muted]);
+  }, [musicStarted]);
 
   const toggleMute = useCallback(() => {
-    setMuted((m) => {
-      if (!audioReady) return m;
-      if (audioRef.current) {
-        audioRef.current.ctx.resume().catch(() => {});
+    if (!musicStarted) {
+      startMusic();
+      setMuted(false);
+      return;
+    }
+    if (musicRef.current) {
+      musicRef.current.muted = !musicRef.current.muted;
+      setMuted(musicRef.current.muted);
+    }
+  }, [musicStarted, startMusic]);
+
+  // Clean up music on unmount
+  useEffect(() => {
+    return () => {
+      if (musicRef.current) {
+        musicRef.current.pause();
+        musicRef.current = null;
       }
-      return !m;
-    });
-  }, [audioReady]);
+    };
+  }, []);
 
   const isVisible = (minPhase: Phase) => phase >= minPhase;
 
@@ -255,8 +281,20 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
     <>
       {/* Inject keyframes */}
       <style>{`
+        /* ── Mobile overrides ──────────────────────────────────── */
+        @media (max-width: 480px) {
+          .lp-content { gap: 8px !important; }
+          .lp-year    { font-size: clamp(64px, 22vw, 100px) !important; }
+          .lp-title   { font-size: clamp(22px, 7vw, 42px) !important; }
+          .lp-wciq    { font-size: clamp(28px, 9vw, 52px) !important; }
+          .lp-globe   { width: 120px !important; height: 120px !important; }
+          .lp-bar     { height: 5vh !important; }
+          .lp-inset   { inset: 5vh 0 !important; }
+          .lp-strip   { height: 48px !important; }
+          .lp-tagline { font-size: 13px !important; }
+        }
         @keyframes charReveal {
-          from { opacity: 0; transform: translateY(40px) rotateX(-60deg); filter: blur(4px); }
+          from { opacity: 0; transform: translateY(28px) rotateX(-45deg); filter: blur(3px); }
           to   { opacity: 1; transform: none; filter: none; }
         }
         @keyframes slamIn {
@@ -323,7 +361,7 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
       {/* ── Full-screen container ─────────────────────────────────────── */}
       <div
         className={phase === 10 ? "landing-exit" : ""}
-        onClick={phase >= 9 ? handleEnter : handleAudioStart}
+        onClick={phase >= 9 ? handleEnter : startMusic}
         style={{
           position: "fixed",
           inset: 0,
@@ -416,7 +454,8 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
           alignItems: "center",
           justifyContent: "center",
           gap: "clamp(12px, 2.5vh, 28px)",
-        }}>
+        }}
+        className="lp-content">
 
           {/* Dark radial fog behind all text — ensures legibility on any bg image */}
           {isVisible(4) && (
@@ -478,29 +517,29 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
 
           {/* 2026 — slam in */}
           {isVisible(5) && (
-            <div style={{
-              position: "relative",
-              zIndex: 2,
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(88px, 19vw, 240px)",
-              fontWeight: 900,
-              lineHeight: 0.85,
-              letterSpacing: "0.12em",
-              /* Bold gold with inner highlight stripe */
-              background: "linear-gradient(175deg, #fffde0 0%, #f5e642 18%, #d3f340 38%, #aacc1a 55%, #f0ff60 72%, #d3f340 88%, #96b800 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: "countUp2026 0.8s cubic-bezier(0.22,1.36,0.4,1) both",
-              filter: [
-                "drop-shadow(0 0 4px rgba(255,255,180,1))",
-                "drop-shadow(0 0 24px rgba(211,243,64,1))",
-                "drop-shadow(0 0 60px rgba(211,243,64,0.8))",
-                "drop-shadow(0 0 120px rgba(180,220,0,0.5))",
-                "drop-shadow(0 6px 0 rgba(0,0,0,0.95))",
-                "drop-shadow(0 12px 24px rgba(0,0,0,0.8))",
-              ].join(" "),
-            }}>
+            <div
+              className="lp-year"
+              style={{
+                position: "relative",
+                zIndex: 2,
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(88px, 19vw, 240px)",
+                fontWeight: 900,
+                lineHeight: 0.85,
+                letterSpacing: "0.12em",
+                background: "linear-gradient(175deg, #fffde0 0%, #f5e642 18%, #d3f340 38%, #aacc1a 55%, #f0ff60 72%, #d3f340 88%, #96b800 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "countUp2026 0.8s cubic-bezier(0.22,1.36,0.4,1) both",
+                filter: [
+                  "drop-shadow(0 0 4px rgba(255,255,180,1))",
+                  "drop-shadow(0 0 24px rgba(211,243,64,1))",
+                  "drop-shadow(0 0 60px rgba(211,243,64,0.8))",
+                  "drop-shadow(0 6px 0 rgba(0,0,0,0.95))",
+                  "drop-shadow(0 12px 24px rgba(0,0,0,0.8))",
+                ].join(" "),
+              }}>
               2026
             </div>
           )}
@@ -719,7 +758,7 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
         }}>
           {/* Mute toggle */}
           <button
-            onClick={(e) => { e.stopPropagation(); if (!audioReady) handleAudioStart(); toggleMute(); }}
+            onClick={(e) => { e.stopPropagation(); toggleMute(); }}
             title={muted ? "Unmute" : "Mute"}
             style={{
               background: "rgba(255,255,255,0.08)",
@@ -734,7 +773,7 @@ export function LandingIntro({ onEnter }: { onEnter: () => void }) {
               backdropFilter: "blur(8px)",
             }}
           >
-            {muted ? "🔇" : "🔊"} SOUND
+            {!musicStarted ? "▶ MUSIC" : muted ? "🔇 MUTED" : "🔊 ON"}
           </button>
 
           {/* Skip */}

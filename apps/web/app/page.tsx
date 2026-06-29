@@ -179,6 +179,32 @@ export default async function HomePage() {
         </InfoCard>
       ) : null}
 
+      {/* ── Image divider after hero ─────────────────────────────────── */}
+      <div
+        className="wc-img-banner wc-glass rounded-2xl"
+        style={{ height: 80, overflow: "hidden" }}
+      >
+        <div
+          className="wc-img-banner-bg"
+          style={{ backgroundImage: "url('/images/hero_action.jpg')", opacity: 0.12 }}
+        />
+        <div className="relative z-10 flex h-full items-center justify-center gap-8 px-6">
+          {["🏆 48 Teams", "📅 104 Matches", "🌍 16 Venues", "⚡ Live Data", "🤖 AI Predictions"].map((item) => (
+            <span
+              key={item}
+              className="hidden text-xs font-semibold sm:block"
+              style={{
+                fontFamily: "var(--font-data)",
+                letterSpacing: "0.15em",
+                color: "rgba(0,229,255,0.7)",
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* ── Route cards with 3D tilt ─────────────────────────────────── */}
       <StaggerList className="grid gap-4 md:grid-cols-2">
         {routeCards.map((card) => (

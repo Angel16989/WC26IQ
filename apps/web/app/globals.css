@@ -650,3 +650,410 @@ select {
 .team-mark:hover img {
   transform: scale(1.05);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BREATHTAKING CSS — WORLD CUP 2026 INTELLIGENCE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Stadium hero image overlay on body ─────────────────────────────── */
+
+body::before {
+  background-size: 64px 64px;
+}
+
+/* Stadium image layer on homepage */
+.wc-stadium-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/images/stadium1.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0.055;
+  filter: saturate(0.4) blur(1px);
+  pointer-events: none;
+}
+
+/* ─── Animated gradient border utility ───────────────────────────────── */
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-border {
+  to { --angle: 360deg; }
+}
+
+.wc-border-glow {
+  position: relative;
+  border-radius: inherit;
+}
+
+.wc-border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0%,
+    rgba(0, 229, 255, 0.8) 20%,
+    rgba(211, 243, 64, 0.9) 40%,
+    rgba(255, 0, 127, 0.6) 60%,
+    rgba(0, 229, 255, 0.8) 80%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotate-border 4s linear infinite;
+}
+
+/* ─── Neon text utilities ─────────────────────────────────────────────── */
+
+.neon-cyan {
+  color: #00e5ff;
+  text-shadow:
+    0 0 4px rgba(0, 229, 255, 1),
+    0 0 16px rgba(0, 229, 255, 0.8),
+    0 0 40px rgba(0, 229, 255, 0.5);
+}
+
+.neon-lime {
+  color: #d3f340;
+  text-shadow:
+    0 0 4px rgba(211, 243, 64, 1),
+    0 0 16px rgba(211, 243, 64, 0.8),
+    0 0 40px rgba(180, 220, 0, 0.5);
+}
+
+.neon-pink {
+  color: #ff007f;
+  text-shadow:
+    0 0 4px rgba(255, 0, 127, 1),
+    0 0 16px rgba(255, 0, 127, 0.7),
+    0 0 40px rgba(255, 0, 127, 0.4);
+}
+
+/* ─── Glowing card panels ────────────────────────────────────────────── */
+
+.wc-card-glow {
+  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wc-card-glow:hover {
+  transform: translateY(-4px) scale(1.008);
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(0, 229, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Animated ticker / marquee ──────────────────────────────────────── */
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.wc-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 28s linear infinite;
+}
+
+.wc-ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+/* ─── Hero section with real image background ────────────────────────── */
+
+.wc-page-hero-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.wc-page-hero-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/night_match.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  filter: saturate(0.5);
+  pointer-events: none;
+}
+
+/* ─── Prediction probability bars ────────────────────────────────────── */
+
+.wc-prob-track {
+  position: relative;
+  overflow: hidden;
+}
+
+.wc-prob-track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 6px,
+    rgba(0, 0, 0, 0.15) 6px,
+    rgba(0, 0, 0, 0.15) 7px
+  );
+  pointer-events: none;
+}
+
+/* ─── Scoreboard numbers ─────────────────────────────────────────────── */
+
+.score-board {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ─── Hover lift for interactive cards ───────────────────────────────── */
+
+.lift-on-hover {
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 300ms ease;
+}
+
+.lift-on-hover:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 229, 255, 0.2),
+    0 0 24px rgba(0, 229, 255, 0.08);
+}
+
+/* ─── Section separator line ─────────────────────────────────────────── */
+
+.wc-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 229, 255, 0.5) 20%,
+    rgba(211, 243, 64, 0.6) 50%,
+    rgba(255, 0, 127, 0.4) 80%,
+    transparent 100%
+  );
+  margin: 2rem 0;
+}
+
+/* ─── Floating orb decorations ───────────────────────────────────────── */
+
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.12; }
+  50%       { transform: translateY(-20px) scale(1.05); opacity: 0.2; }
+}
+
+.wc-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+  animation: orb-float 8s ease infinite;
+}
+
+.wc-orb-cyan {
+  width: 400px; height: 400px;
+  background: rgba(0, 229, 255, 0.15);
+  top: -100px; right: -100px;
+  animation-delay: 0s;
+}
+
+.wc-orb-lime {
+  width: 300px; height: 300px;
+  background: rgba(211, 243, 64, 0.12);
+  bottom: 10%; left: -80px;
+  animation-delay: 3s;
+}
+
+.wc-orb-pink {
+  width: 250px; height: 250px;
+  background: rgba(255, 0, 127, 0.1);
+  top: 40%; right: -50px;
+  animation-delay: 6s;
+}
+
+/* ─── Improved panel variant: frosted glass ─────────────────────────── */
+
+.wc-glass {
+  background: rgba(12, 16, 36, 0.55);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Navigation active pulse ────────────────────────────────────────── */
+
+@keyframes nav-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(211, 243, 64, 0), 0 0 12px rgba(211, 243, 64, 0.2); }
+  50%       { box-shadow: 0 0 0 4px rgba(211, 243, 64, 0), 0 0 20px rgba(211, 243, 64, 0.4); }
+}
+
+.wc-nav-link-active {
+  animation: nav-pulse 2.5s ease infinite;
+}
+
+/* ─── Image hover with zoom + overlay ───────────────────────────────── */
+
+.wc-img-hover {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.wc-img-hover img {
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wc-img-hover:hover img {
+  transform: scale(1.08);
+}
+
+/* ─── Footer styles ──────────────────────────────────────────────────── */
+
+.wc-footer {
+  border-top: 1px solid rgba(244, 244, 250, 0.06);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(4, 4, 9, 0.8) 100%
+  );
+  padding: 3rem 0 2rem;
+  position: relative;
+}
+
+.wc-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--tertiary),
+    var(--secondary),
+    var(--accent),
+    var(--secondary),
+    var(--tertiary),
+    transparent
+  );
+  opacity: 0.5;
+}
+
+/* ─── Social link buttons ────────────────────────────────────────────── */
+
+.wc-social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-family: var(--font-data);
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgba(244, 244, 250, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--foreground-muted);
+  transition: all 250ms ease;
+  text-decoration: none;
+}
+
+.wc-social-btn:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.4);
+  color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 229, 255, 0.15);
+}
+
+/* ─── Page image banner (fixtures, predictions hero) ─────────────────── */
+
+.wc-img-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 120px;
+}
+
+.wc-img-banner-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  filter: saturate(0.7) blur(0px);
+  transition: opacity 600ms ease;
+}
+
+.wc-img-banner:hover .wc-img-banner-bg {
+  opacity: 0.28;
+}
+
+/* ─── Scrollbar styling ──────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(12, 16, 36, 0.4); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--secondary), var(--accent));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent), var(--secondary));
+}
+
+/* ─── Selection highlight ────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(0, 229, 255, 0.25);
+  color: #fff;
+}
+
+/* ─── Input focus ring ───────────────────────────────────────────────── */
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.4);
+}
+
+/* ─── Smooth scroll ──────────────────────────────────────────────────── */
+
+html { scroll-behavior: smooth; }
+
+/* ─── Reduced motion ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Mobile improvements ────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .wc-orb { display: none; }
+  body::before { background-size: 44px 44px; opacity: 0.18; }
+}
