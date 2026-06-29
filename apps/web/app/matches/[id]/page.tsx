@@ -77,45 +77,120 @@ function PitchSVG() {
   );
 }
 
-/* ── Position layout ─────────────────────────────────────────────────── */
-const POSITION_ROWS: Record<string, number[]> = {
-  // y positions (0–100% of half) for each position tier
-  GK:  [50],
-  DEF: [18, 33, 50, 67, 82],
-  MID: [20, 40, 60, 80],
-  FWD: [25, 50, 75],
+/* ── Formation-aware pitch positioning ───────────────────────────────── */
+
+// Known formations — same dict as team detail page
+const FORMATIONS: Record<string, string> = {
+  arg:"4-3-3", bra:"4-2-3-1", fra:"4-3-3", ger:"4-2-3-1", esp:"4-3-3",
+  eng:"4-2-3-1", por:"4-3-3", ned:"4-3-3", bel:"4-3-3", uru:"4-4-2",
+  cro:"4-2-3-1", den:"4-3-3", usa:"4-3-3", mex:"4-3-3", mar:"4-3-3",
+  jpn:"4-2-3-1", kor:"4-4-2", ksa:"4-3-3", sui:"3-4-3", pol:"4-3-3",
+  sen:"4-3-3", civ:"4-3-3", nor:"4-3-3", can:"4-3-3", swe:"4-4-2",
+  tur:"4-2-3-1", col:"4-2-3-1", ecu:"4-3-3", par:"4-3-3",
 };
 
 interface PitchPlayer {
-  name: string; position: string; jersey?: number;
-  x: number; y: number; colour: string;
+  name: string; shortName: string; position: string;
+  x: number; y: number; colour: string; photo?: string;
 }
 
-function buildPitchPositions(players: LineupPlayer[], isHome: boolean, colour: string): PitchPlayer[] {
-  const starters = players.filter(p => p.likelyStarter).slice(0, 11);
-  // Group by position
-  const byPos: Record<string, LineupPlayer[]> = { GK:[], DEF:[], MID:[], FWD:[] };
-  for (const p of starters) {
-    const pos = p.position.toUpperCase().slice(0, 3);
-    const key = ["GK","DEF","MID","FWD"].includes(pos) ? pos : "MID";
-    byPos[key].push(p);
+const LEGEND_PHOTOS_MATCH: Record<string, string> = {
+  "lionel messi": "/legends/messi.png",
+  "cristiano ronaldo": "/legends/ronaldo.jpg",
+  "kylian mbappé": "/legends/mbappe.jpg", "kylian mbappe": "/legends/mbappe.jpg",
+  "neymar": "/legends/neymar.jpg",
+  "harry kane": "/legends/kane.jpg",
+  "vinícius júnior": "/legends/vinicius.jpg", "vinicius junior": "/legends/vinicius.jpg",
+  "jude bellingham": "/legends/bellingham.jpg",
+  "mohamed salah": "/legends/salah.jpg",
+  "luka modrić": "/legends/modric.jpg", "luka modric": "/legends/modric.jpg",
+  "robert lewandowski": "/legends/lewandowski.jpg",
+  "pedri": "/legends/pedri.jpg",
+};
+
+/** Even horizontal spread for N players: 12%–88% */
+function xPositions(n: number): number[] {
+  if (n === 1) return [50];
+  return Array.from({ length: n }, (_, i) => 12 + (i / (n - 1)) * 76);
+}
+
+function buildPitchPositions(
+  players: LineupPlayer[],
+  isHome: boolean,
+  colour: string,
+  teamId: string,
+): PitchPlayer[] {
+  const formStr   = FORMATIONS[teamId] ?? "4-3-3";
+  const lineCounts = formStr.split("-").map(Number); // e.g. [4,3,3] or [4,2,3,1]
+
+  // Pull the first 11 likely starters, sorted by position priority
+  const posOrder: Record<string, number> = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
+  const starters = [...players]
+    .filter(p => p.likelyStarter)
+    .sort((a, b) => (posOrder[a.position] ?? 9) - (posOrder[b.position] ?? 9))
+    .slice(0, 11);
+
+  // Bucket players by position
+  const gks  = starters.filter(p => p.position === "GK");
+  const defs = starters.filter(p => p.position === "DEF");
+  const mids = starters.filter(p => p.position === "MID");
+  const fwds = starters.filter(p => p.position === "FWD");
+
+  // Build ordered lines: [GK line, DEF line, ...MID sub-lines..., FWD line]
+  const lines: LineupPlayer[][] = [];
+
+  // GK
+  lines.push(gks.slice(0, 1));
+
+  // DEF line — lineCounts[0] players
+  lines.push(defs.slice(0, lineCounts[0]));
+
+  // Middle lines (everything between DEF and FWD counts)
+  const midLineCounts = lineCounts.slice(1, -1); // e.g. [2,3] from 4-2-3-1
+  let midUsed = 0;
+  for (const count of midLineCounts) {
+    lines.push(mids.slice(midUsed, midUsed + count));
+    midUsed += count;
   }
+  // Any remaining mids if formation only has one mid line (e.g. 4-3-3)
+  if (midLineCounts.length === 0 && lineCounts.length > 2) {
+    const midCount = lineCounts[1];
+    lines.push(mids.slice(0, midCount));
+  }
+
+  // FWD line — last lineCounts entry
+  lines.push(fwds.slice(0, lineCounts[lineCounts.length - 1]));
+
+  // Remove empty lines
+  const nonEmptyLines = lines.filter(l => l.length > 0);
+  const totalLines = nonEmptyLines.length;
 
   const result: PitchPlayer[] = [];
-  const tiers = isHome ? ["FWD","MID","DEF","GK"] : ["GK","DEF","MID","FWD"];
-  const yTier = isHome
-    ? { GK: 92, DEF: 76, MID: 60, FWD: 44 }
-    : { GK:  8, DEF: 24, MID: 40, FWD: 56 };
 
-  for (const tier of tiers) {
-    const group = byPos[tier];
-    if (!group.length) continue;
-    const n = group.length;
-    group.forEach((p, i) => {
-      const x = n === 1 ? 50 : 10 + ((i / (n - 1)) * 80);
-      result.push({ name: p.name.split(" ").pop()!, position: tier, x, y: yTier[tier as keyof typeof yTier], colour });
+  nonEmptyLines.forEach((line, lineIdx) => {
+    // y: home team fills bottom half (GK near bottom edge), away fills top half
+    const frac = lineIdx / Math.max(totalLines - 1, 1); // 0 = GK end, 1 = attacking end
+    const y = isHome
+      ? 91 - frac * 58   // 91% (GK) → 33% (forwards)
+      :  9 + frac * 58;  //  9% (GK) → 67% (forwards)
+
+    const xs = xPositions(line.length);
+
+    line.forEach((p, i) => {
+      const lastName = p.name.split(" ").slice(-1)[0] ?? p.name;
+      const shortName = lastName.length > 8 ? lastName.slice(0, 7) + "." : lastName;
+      result.push({
+        name: p.name,
+        shortName,
+        position: p.position,
+        x: xs[i],
+        y,
+        colour,
+        photo: LEGEND_PHOTOS_MATCH[p.name.toLowerCase()],
+      });
     });
-  }
+  });
+
   return result;
 }
 
@@ -174,9 +249,9 @@ export default async function MatchPage({ params }: PageProps) {
   const homeFlagSrc = match.home ? getTeamFlagSvgPath(match.home.fifaCode) : null;
   const awayFlagSrc = match.away ? getTeamFlagSvgPath(match.away.fifaCode) : null;
 
-  // Build pitch players
-  const homePitchPlayers = buildPitchPositions(match.homeLineup, true, "#00e5ff");
-  const awayPitchPlayers = buildPitchPositions(match.awayLineup, false, "#f87171");
+  // Build pitch players using real formations
+  const homePitchPlayers = buildPitchPositions(match.homeLineup, true,  "#4cd7f6", match.home?.id ?? "");
+  const awayPitchPlayers = buildPitchPositions(match.awayLineup, false, "#f87171", match.away?.id ?? "");
   const allPitchPlayers  = [...homePitchPlayers, ...awayPitchPlayers];
 
   // Separate key events: only meaningful ones
@@ -278,12 +353,27 @@ export default async function MatchPage({ params }: PageProps) {
         <div className="space-y-4">
           {/* Pitch */}
           <div className="wc-panel rounded-2xl p-4">
-            <p className="wc-data-label text-xs font-semibold mb-4">
-              Predicted Lineups · Pitch View
-            </p>
-            <div className="relative mx-auto" style={{ maxWidth:340, height:520 }}>
+            {/* Formation badges */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold" style={{ color:"#4cd7f6" }}>{match.home?.name}</span>
+                <span className="rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background:"rgba(76,215,246,0.12)", color:"#4cd7f6", border:"1px solid rgba(76,215,246,0.3)" }}>
+                  {FORMATIONS[match.home?.id ?? ""] ?? "4-3-3"}
+                </span>
+              </div>
+              <span className="wc-data-label text-[10px]">Predicted XI</span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background:"rgba(248,113,113,0.12)", color:"#f87171", border:"1px solid rgba(248,113,113,0.3)" }}>
+                  {FORMATIONS[match.away?.id ?? ""] ?? "4-3-3"}
+                </span>
+                <span className="text-xs font-bold" style={{ color:"#f87171" }}>{match.away?.name}</span>
+              </div>
+            </div>
+
+            <div className="relative mx-auto overflow-hidden rounded-xl" style={{ maxWidth:360, height:540 }}>
               <PitchSVG />
-              {/* Players */}
+
+              {/* Player tokens */}
               {allPitchPlayers.map((p, i) => (
                 <div key={i} style={{
                   position:"absolute",
@@ -291,29 +381,54 @@ export default async function MatchPage({ params }: PageProps) {
                   transform:"translate(-50%,-50%)",
                   textAlign:"center",
                   zIndex:5,
+                  width:46,
                 }}>
+                  {/* Circle / photo */}
                   <div style={{
-                    width:28, height:28, borderRadius:"50%",
-                    background:p.colour + "25",
+                    width:34, height:34, borderRadius:"50%",
+                    background: p.photo ? "transparent" : p.colour + "30",
                     border:`2px solid ${p.colour}`,
                     margin:"0 auto 2px",
+                    overflow:"hidden",
                     display:"flex", alignItems:"center", justifyContent:"center",
-                    fontSize:8, color:"#fff", fontWeight:700,
-                    boxShadow:`0 0 8px ${p.colour}60`,
+                    boxShadow:`0 0 10px ${p.colour}60, 0 2px 8px rgba(0,0,0,0.7)`,
+                    position:"relative",
                   }}>
-                    {p.position[0]}
+                    {p.photo ? (
+                      <Image src={p.photo} alt={p.name} fill className="object-cover object-top" unoptimized />
+                    ) : (
+                      <span style={{ fontSize:9, color:p.colour, fontWeight:800, fontFamily:"var(--font-data)" }}>
+                        {p.position}
+                      </span>
+                    )}
                   </div>
-                  <p style={{ fontSize:8, color:"#fff", textShadow:"0 1px 4px rgba(0,0,0,0.9)", maxWidth:48, lineHeight:1.2, margin:"0 auto", fontWeight:600 }}>
-                    {p.name.length > 9 ? p.name.slice(0,9) + "." : p.name}
+                  {/* Name */}
+                  <p style={{
+                    fontSize:7.5,
+                    color:"#fff",
+                    textShadow:"0 1px 6px rgba(0,0,0,0.95), 0 0 4px rgba(0,0,0,1)",
+                    lineHeight:1.2,
+                    fontWeight:700,
+                    letterSpacing:"0.01em",
+                    maxWidth:46,
+                    margin:"0 auto",
+                  }}>
+                    {p.shortName}
                   </p>
                 </div>
               ))}
-              {/* Labels */}
-              <div style={{ position:"absolute", top:4, left:0, right:0, textAlign:"center" }}>
-                <span style={{ fontSize:9, color:"rgba(0,229,255,.7)", fontFamily:"var(--font-data)", letterSpacing:"0.1em" }}>{match.home?.name ?? "HOME"}</span>
+
+              {/* Home label top */}
+              <div style={{ position:"absolute", top:6, left:0, right:0, textAlign:"center", zIndex:6 }}>
+                <span style={{ fontSize:8, color:"rgba(76,215,246,.75)", fontFamily:"var(--font-data)", letterSpacing:"0.14em", textTransform:"uppercase", background:"rgba(0,0,0,.4)", padding:"1px 6px", borderRadius:4 }}>
+                  {match.home?.name}
+                </span>
               </div>
-              <div style={{ position:"absolute", bottom:4, left:0, right:0, textAlign:"center" }}>
-                <span style={{ fontSize:9, color:"rgba(248,113,113,.7)", fontFamily:"var(--font-data)", letterSpacing:"0.1em" }}>{match.away?.name ?? "AWAY"}</span>
+              {/* Away label bottom */}
+              <div style={{ position:"absolute", bottom:6, left:0, right:0, textAlign:"center", zIndex:6 }}>
+                <span style={{ fontSize:8, color:"rgba(248,113,113,.75)", fontFamily:"var(--font-data)", letterSpacing:"0.14em", textTransform:"uppercase", background:"rgba(0,0,0,.4)", padding:"1px 6px", borderRadius:4 }}>
+                  {match.away?.name}
+                </span>
               </div>
             </div>
 
