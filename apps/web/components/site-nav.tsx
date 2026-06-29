@@ -7,6 +7,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/teams", label: "Teams" },
   { href: "/fixtures", label: "Fixtures" },
+  { href: "/knockout", label: "⚡ Knockout" },
   { href: "/predictions", label: "Predictions" },
   { href: "/simulator", label: "Simulator" },
   { href: "/about", label: "About" },

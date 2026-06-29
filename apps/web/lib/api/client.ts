@@ -27,6 +27,23 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+// ── Knockout types ──────────────────────────────────────────────────────────
+export interface TeamRef { id: string; name: string; fifaCode: string; group?: string | null; }
+export interface BracketMatch {
+  matchId: string; stage: string; kickoffUtc: string | null; status: string;
+  home: TeamRef | null; away: TeamRef | null;
+  homeScore: number | null; awayScore: number | null;
+  homeWinPct: number | null; awayWinPct: number | null; drawPct: number | null;
+}
+export interface KnockoutBracket { totalCompleted: number; totalScheduled: number; bracket: BracketMatch[]; }
+export interface KeyMatch { stage: string; opponentId: string; opponentName: string; opponentFifa: string; winPct: number; }
+export interface WinnerScenario {
+  scenarioId: string; title: string; subtitle: string;
+  championId: string; championName: string; championFifa: string;
+  probability: number; narrative: string; keyMatches: KeyMatch[];
+}
+export interface ScenariosResponse { scenarios: WinnerScenario[]; modelVersion: string; note: string; }
+
 export const apiClient = {
   health: () => request<HealthResponse>("/health"),
   teams: () => request<Team[]>("/teams"),
@@ -43,4 +60,6 @@ export const apiClient = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  knockout: () => request<KnockoutBracket>("/knockout"),
+  scenarios: () => request<ScenariosResponse>("/scenarios"),
 };
