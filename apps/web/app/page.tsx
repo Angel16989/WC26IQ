@@ -42,15 +42,8 @@ function stageLabel(stage: Match["stage"]) {
 }
 
 function scoreText(match: Match) {
-  if (match.homeScore != null && match.awayScore != null) {
-    return `${match.homeScore} – ${match.awayScore}`;
-  }
-  if (match.status === "live") {
-    return "LIVE";
-  }
-  if (match.status === "final") {
-    return "FT";
-  }
+  if (match.status === "live") return "LIVE";
+  if (match.status === "final") return "FT";
   return matchTime(match.kickoffUtc);
 }
 
