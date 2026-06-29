@@ -22,9 +22,9 @@ export default async function PredictionsPage() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow="Predictions"
-        title="Run live match forecasts inside the real app shell"
-        description="The prediction page now uses the shared frontend navigation and the backend prediction endpoint directly. That means the UI can stay consistent while still showing model output, scorer projections, and explanation notes."
+        eyebrow="Match Predictions · DC-Poisson Model"
+        title="Forecast any of the 104 WC 2026 matches"
+        description="Select any upcoming fixture — our Dixon-Coles corrected Poisson model calculates win/draw/loss probabilities, expected goals, and top scorer predictions using real squad strength and form data."
         aside={
           <div className="wc-panel-muted rounded-3xl p-5">
             <p className="wc-data-label text-xs font-semibold">Coverage Snapshot</p>

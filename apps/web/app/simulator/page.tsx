@@ -23,9 +23,9 @@ export default async function SimulatorPage() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow="Simulator"
-        title="Generate tournament outcome projections without leaving the main app"
-        description="This page now uses the current simulation endpoint instead of a disconnected mock screen. It stays inside the same visual system as the rest of the site and surfaces winner, finalist, and group-table projections."
+        eyebrow="Tournament Simulator · Monte Carlo"
+        title="Simulate the full WC 2026 — who lifts the trophy?"
+        description="Runs up to 10,000 independent tournament simulations using real team strength, form, and squad data. Shows winner probabilities, finalists, and projected group tables. Uses the same Poisson model as the Predictions page."
         aside={
           <div className="wc-panel-muted rounded-3xl p-5">
             <p className="wc-data-label text-xs font-semibold">Simulation Scope</p>

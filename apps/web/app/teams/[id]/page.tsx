@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Match, Player, Team } from "@worldcupiq/shared";
 import { TeamMark } from "@/components/team-mark";
 import { InfoCard } from "@/components/info-card";
@@ -7,6 +8,38 @@ import { StaggerList } from "@/components/stagger-list";
 import { apiClient } from "@/lib/api/client";
 import { confederationAccent } from "@/lib/team-visuals";
 import { getTeamFlagSvgPath } from "@/lib/team-visuals";
+
+// Known formations for major WC 2026 teams
+const FORMATIONS: Record<string, string> = {
+  arg:"4-3-3", bra:"4-2-3-1", fra:"4-3-3", ger:"4-2-3-1", esp:"4-3-3",
+  eng:"4-2-3-1", por:"4-3-3", ned:"4-3-3", bel:"4-3-3", uru:"4-4-2",
+  cro:"4-2-3-1", den:"4-3-3", usa:"4-3-3", mex:"4-3-3", mar:"4-3-3",
+  jpn:"4-2-3-1", kor:"4-4-2", ksa:"4-3-3", sui:"3-4-3", pol:"4-3-3",
+  sen:"4-3-3", civ:"4-3-3", nor:"4-3-3", can:"4-3-3", swe:"4-4-2",
+  tur:"4-2-3-1", col:"4-2-3-1", ecu:"4-3-3", par:"4-3-3",
+};
+
+// Players with real photos in /legends/
+const LEGEND_PHOTOS: Record<string, string> = {
+  "lionel messi":        "/legends/messi.png",
+  "cristiano ronaldo":   "/legends/ronaldo.jpg",
+  "kylian mbappé":       "/legends/mbappe.jpg",
+  "kylian mbappe":       "/legends/mbappe.jpg",
+  "neymar":              "/legends/neymar.jpg",
+  "harry kane":          "/legends/kane.jpg",
+  "vinícius júnior":     "/legends/vinicius.jpg",
+  "vinicius junior":     "/legends/vinicius.jpg",
+  "jude bellingham":     "/legends/bellingham.jpg",
+  "mohamed salah":       "/legends/salah.jpg",
+  "luka modrić":         "/legends/modric.jpg",
+  "luka modric":         "/legends/modric.jpg",
+  "robert lewandowski":  "/legends/lewandowski.jpg",
+  "pedri":               "/legends/pedri.jpg",
+};
+
+function getPlayerPhoto(name: string): string | null {
+  return LEGEND_PHOTOS[name.toLowerCase()] ?? null;
+}
 
 const positionOrder: Record<string, number> = { GK: 0, DEF: 1, MID: 2, FWD: 3 };
 const positionColour: Record<string, string> = {
@@ -72,6 +105,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
 
   const accent = confederationAccent[team.confederation] ?? "var(--secondary)";
   const flagSvg = getTeamFlagSvgPath(team.fifaCode);
+  const formation = FORMATIONS[team.id] ?? "4-3-3";
 
   // Fixtures involving this team
   const teamId = team.id;
@@ -156,6 +190,10 @@ export default async function TeamDetailPage({ params }: PageProps) {
                 {team.name}
               </h1>
               <p className="wc-body mt-1 text-sm">{team.fifaCode}</p>
+              {/* Formation badge */}
+              <div className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: accent + "18", border: `1px solid ${accent}40`, color: accent, fontFamily: "var(--font-data)" }}>
+                ◈ {formation}
+              </div>
             </div>
           </div>
 
@@ -221,29 +259,36 @@ export default async function TeamDetailPage({ params }: PageProps) {
                       {group.map((player) => (
                         <div
                           key={player.id}
-                          className="player-card wc-panel-muted flex items-center gap-3 rounded-2xl px-4 py-3"
+                          className="player-card wc-panel-muted flex items-center gap-3 rounded-2xl px-3 py-3"
                         >
-                          {/* Position badge */}
-                          <span
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[10px] font-bold"
-                            style={{
-                              background: (positionColour[player.position] ?? accent) + "18",
-                              color: positionColour[player.position] ?? accent,
-                              border: `1px solid ${positionColour[player.position] ?? accent}44`,
-                            }}
-                          >
+                          {/* Player photo or initials avatar */}
+                          {(() => {
+                            const photo = getPlayerPhoto(player.name);
+                            const posCol = positionColour[player.position] ?? accent;
+                            return photo ? (
+                              <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl" style={{ border: `1px solid ${posCol}50` }}>
+                                <Image src={photo} alt={player.name} fill className="object-cover object-top" unoptimized />
+                              </div>
+                            ) : (
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[10px] font-bold" style={{ background: posCol + "18", color: posCol, border: `1px solid ${posCol}40` }}>
+                                {player.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()}
+                              </div>
+                            );
+                          })()}
+                          {/* Pos tag */}
+                          <span className="shrink-0 w-7 text-center text-[9px] font-bold rounded" style={{ background: (positionColour[player.position] ?? accent) + "15", color: positionColour[player.position] ?? accent, padding: "2px 0" }}>
                             {player.position}
                           </span>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold text-[var(--foreground)]">
                               {player.name}
                             </p>
-                            <p className="wc-body truncate text-xs">{player.club}</p>
+                            <p className="wc-body truncate text-xs">{player.club || "International"}</p>
                           </div>
                           {/* Goal threat bar */}
                           <div className="flex flex-col items-end gap-1">
                             <p className="text-xs font-semibold" style={{ color: accent }}>
-                              {player.goalThreat.toFixed(1)}
+                              {player.goalThreat.toFixed(2)}
                             </p>
                             <div className="h-1 w-12 overflow-hidden rounded-full bg-[rgba(35,41,60,0.9)]">
                               <div

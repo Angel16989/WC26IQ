@@ -267,71 +267,119 @@ def generate_winner_scenarios(n_simulations: int = 8000) -> list[WinnerScenario]
         key=lambda x: -x[1],
     )
 
-    # Identify which team is from which confederation
-    def _confederation(team: Team) -> str:
-        return team.confederation
-
-    # Build 5 narrative scenarios from the top contenders
+    # Build 5 narrative scenarios
     scenarios: list[WinnerScenario] = []
 
+    # ── TEAM TIERS — based on historical WC record + current squad quality ──
+    # Tier 1 = Clear favourites (must never appear as "dark horse")
+    # Tier 2 = Strong contenders
+    # Tier 3 = True dark horses (shock winners)
+    TIER_1 = {"arg", "bra", "fra", "ger", "esp", "eng"}   # perennial powers
+    TIER_2 = {"por", "ned", "bel", "uru", "cro", "den", "usa", "mex", "mar"}
+    # Everyone else is Tier 3
+
+    def _tier(team_id: str) -> int:
+        if team_id in TIER_1: return 1
+        if team_id in TIER_2: return 2
+        return 3
+
+    # ── SCENARIO TEMPLATES — 5 distinct narratives with correct tier mapping ──
+    # Each slot specifies which tier the champion MUST be from
     scenario_templates = [
-        ("dominant-favourite", "The Dominant Favourite",
-         "The highest-ranked team fulfils expectations",
-         "Rolls through the bracket with clinical performances — none of the other top sides can match their consistency."),
-        ("sleeping-giant", "The Giant Wakes",
-         "Second seed detonates the bracket",
-         "Starts quietly in the group stage then turns the tournament upside down from the quarterfinals onward."),
-        ("dark-horse", "Dark Horse Runs Deep",
-         "An underdog outlasts the giants",
-         "Absorbs early pressure, wins on fine margins, and reaches the final when the tournament's big names knock each other out."),
-        ("revenge-arc", "The Revenge Arc",
-         "Last tournament's runners-up go all the way",
-         "Uses every lesson from a previous final defeat to build the most complete squad in the tournament."),
-        ("host-nation", "Tournament Miracle",
-         "Nobody saw this coming",
-         "Feeds off home-nation energy and inspired performances, defeating a succession of higher-ranked sides in shock results."),
+        ("favourite",   "The Champion Favourite",
+         "The pre-tournament favourite delivers",
+         "Clinical, dominant, and relentless — the team everyone feared in the draw "
+         "lives up to every expectation. World-class talent, an elite coach, and "
+         "tournament experience combine to produce a masterclass performance.",
+         [1]),   # must be Tier 1
+        ("second-giant", "South American / European Powerhouse",
+         "The second superpower claims the trophy",
+         "Two giants were always destined to clash. With Tier 1 talent and a "
+         "burning desire to reclaim football's highest prize, this team dismantles "
+         "every opponent with attacking football that leaves no answer.",
+         [1]),   # also Tier 1 (different team)
+        ("contender",   "The Contender's Moment",
+         "A top-10 nation finally breaks through",
+         "Talented enough to win, overlooked often enough to have a point to prove. "
+         "This side peaks at exactly the right moment — combining structure, "
+         "individual brilliance, and tactical discipline to outlast the heavyweights.",
+         [2]),   # Tier 2
+        ("host-glory",  "Home Continent Glory",
+         "The Americas claim the inaugural 48-team title",
+         "With three host nations (USA, Canada, Mexico), CONCACAF has never had a "
+         "better shot. Massive home support, travel advantage, and a generation of "
+         "talented players combine in a perfect storm.",
+         [2, 3]),  # Tier 2 or 3 CONCACAF/Americas
+        ("dark-horse",  "The Shock Winner",
+         "Nobody predicted this — and that's the magic of football",
+         "Not in any bookmaker's top 10. Dismissed after the draw. Yet here they "
+         "are — riding wave after wave of team spirit, tactical brilliance, and "
+         "inspired goalkeeping to claim the trophy the world never saw coming.",
+         [3]),   # must be Tier 3
     ]
 
     used_teams: set[str] = set()
-    for i, (scid, title, subtitle, narrative) in enumerate(scenario_templates):
-        # Pick best eligible team not already used
+    for i, (scid, title, subtitle, narrative, allowed_tiers) in enumerate(scenario_templates):
+        # Pick the best eligible team matching the tier constraint
+        chosen_tid: str | None = None
+        chosen_prob: float = 0.0
         for tid, prob in ranked:
-            if tid not in used_teams:
-                team = team_by_id.get(tid)
-                if team:
-                    # Compute key matches this team would likely play
-                    key_opponents = [
-                        team_by_id[r[0]] for r in ranked
-                        if r[0] != tid and r[0] not in used_teams
-                    ][:3]
-                    key_matches_list = []
-                    for opp in key_opponents:
-                        ph, pd, pa = _win_probabilities(team, opp, neutral=True)
-                        key_matches_list.append({
-                            "stage": "quarterfinal" if len(key_matches_list) == 0 else
-                                     "semifinal" if len(key_matches_list) == 1 else "final",
-                            "opponent_id": opp.id,
-                            "opponent_name": opp.name.title(),
-                            "opponent_fifa": opp.fifaCode,
-                            "win_pct": round(ph * 100, 1),
-                        })
-
-                    scenarios.append(WinnerScenario(
-                        scenario_id=scid,
-                        title=title,
-                        subtitle=subtitle,
-                        champion_team_id=tid,
-                        champion_name=team.name.title(),
-                        champion_fifa=team.fifaCode,
-                        probability=round(prob * 100, 1),
-                        narrative=narrative,
-                        key_matches=key_matches_list,
-                    ))
-                    used_teams.add(tid)
+            if tid in used_teams:
+                continue
+            tier = _tier(tid)
+            # Special case: host-glory prefers Americas teams
+            if scid == "host-glory":
+                team_obj = team_by_id.get(tid)
+                conf = team_obj.confederation if team_obj else ""
+                if "CONCACAF" not in conf and "CONMEBOL" not in conf:
+                    continue
+            if tier in allowed_tiers:
+                chosen_tid = tid
+                chosen_prob = prob
+                break
+        # Fallback: any unused team
+        if not chosen_tid:
+            for tid, prob in ranked:
+                if tid not in used_teams:
+                    chosen_tid = tid
+                    chosen_prob = prob
                     break
+        if not chosen_tid:
+            continue
 
-        if len(scenarios) == 5:
-            break
+        team = team_by_id.get(chosen_tid)
+        if not team:
+            continue
+
+        # Compute key matches
+        key_opponents = [
+            team_by_id[r[0]] for r in ranked
+            if r[0] != chosen_tid and r[0] not in used_teams and team_by_id.get(r[0])
+        ][:3]
+        key_matches_list = []
+        stage_names = ["quarterfinal", "semifinal", "final"]
+        for j, opp in enumerate(key_opponents):
+            ph, _, _ = _win_probabilities(team, opp, neutral=True)
+            key_matches_list.append({
+                "stage": stage_names[j],
+                "opponent_id": opp.id,
+                "opponent_name": opp.name.title(),
+                "opponent_fifa": opp.fifaCode,
+                "win_pct": round(ph * 100, 1),
+            })
+
+        scenarios.append(WinnerScenario(
+            scenario_id=scid,
+            title=title,
+            subtitle=subtitle,
+            champion_team_id=chosen_tid,
+            champion_name=team.name.title(),
+            champion_fifa=team.fifaCode,
+            probability=round(chosen_prob * 100, 1),
+            narrative=narrative,
+            key_matches=key_matches_list,
+        ))
+        used_teams.add(chosen_tid)
 
     # Normalise probabilities to sum to 100
     total_pct = sum(s.probability for s in scenarios) or 1.0
