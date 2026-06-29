@@ -1,5 +1,6 @@
-from functools import lru_cache
 import logging
+import time
+from threading import Lock
 
 from app.core.settings import get_settings
 from app.data.providers import (
@@ -15,9 +16,38 @@ from app.schemas.common import Match, Player, Team
 
 logger = logging.getLogger(__name__)
 
+# TTL cache — re-fetches warehouse data every 5 minutes so new ESPN
+# syncs appear without restarting the API.
+_BUNDLE_TTL = 300  # seconds
+_bundle_cache: DataBundle | None = None
+_bundle_loaded_at: float = 0.0
+_bundle_lock = Lock()
 
-@lru_cache(maxsize=1)
+
+def _bundle_is_stale() -> bool:
+    return _bundle_cache is None or (time.monotonic() - _bundle_loaded_at) > _BUNDLE_TTL
+
+
+def invalidate_bundle() -> None:
+    """Force next request to re-fetch from the warehouse."""
+    global _bundle_loaded_at
+    _bundle_loaded_at = 0.0
+
+
 def get_data_bundle() -> DataBundle:
+    global _bundle_cache, _bundle_loaded_at
+    if not _bundle_is_stale():
+        return _bundle_cache  # type: ignore[return-value]
+    with _bundle_lock:
+        if not _bundle_is_stale():  # double-check inside lock
+            return _bundle_cache  # type: ignore[return-value]
+        bundle = _load_bundle()
+        _bundle_cache = bundle
+        _bundle_loaded_at = time.monotonic()
+        return bundle
+
+
+def _load_bundle() -> DataBundle:
     settings = get_settings()
     provider = settings.data_provider
 
@@ -70,17 +100,14 @@ def _with_persistence(bundle: DataBundle, *, provider_name: str) -> DataBundle:
     return bundle
 
 
-@lru_cache(maxsize=1)
 def get_teams() -> list[Team]:
     return get_data_bundle().teams
 
 
-@lru_cache(maxsize=1)
 def get_players() -> list[Player]:
     return get_data_bundle().players
 
 
-@lru_cache(maxsize=1)
 def get_fixtures() -> list[Match]:
     return get_data_bundle().fixtures
 
@@ -91,3 +118,11 @@ def get_team_by_id(team_id: str) -> Team | None:
 
 def get_players_by_team(team_id: str) -> list[Player]:
     return [player for player in get_players() if player.teamId == team_id]
+
+
+# Test and admin tools used to call lru_cache-style `.cache_clear()` methods.
+# Keep that tiny compatibility layer while the repository uses a TTL cache.
+get_data_bundle.cache_clear = invalidate_bundle  # type: ignore[attr-defined]
+get_teams.cache_clear = invalidate_bundle  # type: ignore[attr-defined]
+get_players.cache_clear = invalidate_bundle  # type: ignore[attr-defined]
+get_fixtures.cache_clear = invalidate_bundle  # type: ignore[attr-defined]

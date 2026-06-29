@@ -24,6 +24,15 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Module-level coach cache populated when the warehouse loads.
+# Key: team_id  Value: head coach display name
+_COACH_CACHE: dict[str, str] = {}
+
+
+def get_coach(team_id: str) -> str | None:
+    """Return the head coach name for a team, or None if unknown."""
+    return _COACH_CACHE.get(team_id)
+
 _TEAM_METADATA: dict[str, dict] = {
     # Confederation lookup — supplement what is already in core.teams.raw_team
     "arg": "CONMEBOL", "bra": "CONMEBOL", "col": "CONMEBOL", "uru": "CONMEBOL",
@@ -125,6 +134,8 @@ class WarehouseDataProvider:
                 teams    = self._load_teams(conn)
                 fixtures = self._load_fixtures(conn)
                 players  = self._load_players(conn)
+                # Populate coach cache from core.coaches if table exists
+                self._enrich_teams_with_coaches(conn)
         except Exception as exc:
             raise DataProviderError(f"Warehouse load failed: {exc}") from exc
 
@@ -192,6 +203,17 @@ class WarehouseDataProvider:
                 )
             )
         return players
+
+    def _enrich_teams_with_coaches(self, conn) -> None:
+        """Pull head coach names into the module-level cache for team detail pages."""
+        try:
+            rows = conn.execute(
+                "SELECT team_id, coach_name FROM core.coaches"
+            ).fetchall()
+            _COACH_CACHE.update({r[0]: r[1] for r in rows})
+            logger.info("Coach cache populated: %d coaches", len(_COACH_CACHE))
+        except Exception:
+            pass  # table may not exist yet — silently skip
 
     def _load_fixtures(self, conn) -> list[Match]:
         rows = conn.execute(

@@ -21,6 +21,10 @@ class Settings:
     database_auto_migrate: bool
     database_connect_timeout_seconds: int
     warehouse_database_url: str | None
+    live_score_mode: str
+    live_score_target_interval_seconds: int
+    freshness_match_window_minutes: int
+    freshness_final_grace_hours: float
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
@@ -45,6 +49,9 @@ def _load_env_file(path: Path, *, override: bool = False) -> None:
 
 
 def _load_runtime_env_files() -> None:
+    if os.getenv("WORLDCUPIQ_SKIP_ENV_FILES", "").strip().lower() in {"1", "true", "yes", "on"}:
+        return
+
     _load_env_file(PROJECT_ROOT / ".env.example")
     _load_env_file(API_ROOT / ".env.example")
     _load_env_file(PROJECT_ROOT / ".env")
@@ -118,4 +125,12 @@ def get_settings() -> Settings:
         warehouse_database_url=(
             os.getenv("WORLDCUPIQ_WAREHOUSE_URL", "").strip() or None
         ),
+        live_score_mode=os.getenv("WORLDCUPIQ_LIVE_SCORE_MODE", "not_configured").strip().lower(),
+        live_score_target_interval_seconds=int(
+            _read_optional_float("WORLDCUPIQ_LIVE_SCORE_TARGET_INTERVAL_SECONDS", 3)
+        ),
+        freshness_match_window_minutes=int(
+            _read_optional_float("WORLDCUPIQ_FRESHNESS_MATCH_WINDOW_MINUTES", 150)
+        ),
+        freshness_final_grace_hours=_read_optional_float("WORLDCUPIQ_FRESHNESS_FINAL_GRACE_HOURS", 4),
     )
