@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<base target="_top"/>
+<title>WorldCupIQ - Predict the World Cup with intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;family=JetBrains+Mono:wght@500&amp;family=Sora:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#4ae176",
+                        "surface-tint": "#4ae176",
+                        "on-tertiary": "#402d00",
+                        "surface-container-highest": "#2e3447",
+                        "on-primary-fixed-variant": "#005321",
+                        "surface": "#0c1324",
+                        "on-tertiary-fixed": "#261a00",
+                        "secondary-container": "#03b5d3",
+                        "on-primary-container": "#004b1e",
+                        "on-error": "#690005",
+                        "primary-container": "#22c55e",
+                        "primary-fixed": "#6bff8f",
+                        "surface-container-lowest": "#070d1f",
+                        "on-secondary-fixed": "#001f26",
+                        "on-surface-variant": "#bccbb9",
+                        "surface-dim": "#0c1324",
+                        "primary": "#4be277",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "secondary": "#4cd7f6",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "tertiary-container": "#daa300",
+                        "surface-bright": "#33394c",
+                        "on-primary": "#003915",
+                        "on-secondary": "#003640",
+                        "on-surface": "#dce1fb",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#151b2d",
+                        "surface-container": "#191f31",
+                        "outline-variant": "#3d4a3d",
+                        "inverse-primary": "#006e2f",
+                        "surface-variant": "#2e3447",
+                        "on-tertiary-container": "#533c00",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "tertiary-fixed": "#ffdf9f",
+                        "on-secondary-container": "#00424e",
+                        "inverse-surface": "#dce1fb",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#f9bd22",
+                        "background": "#0c1324",
+                        "on-background": "#dce1fb",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#002109",
+                        "secondary-fixed": "#acedff",
+                        "surface-container-high": "#23293c",
+                        "tertiary": "#fabe22",
+                        "outline": "#869585",
+                        "inverse-on-surface": "#2a3043"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "20px",
+                        "container-max": "1440px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "base": "4px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "data-label": ["JetBrains Mono"],
+                        "headline-md": ["Sora"],
+                        "data-value": ["Sora"],
+                        "display-lg": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "data-label": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-value": ["20px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen scanline">
+<!-- TopNavBar -->
+<nav class="bg-surface/80 backdrop-blur-xl text-primary font-body-md text-body-md fixed top-0 w-full z-50 border-b border-white/10 shadow-[0_0_20px_rgba(74,225,118,0.1)]">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto hidden md:flex">
+<div class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter">
+                WorldCupIQ
+            </div>
+<div class="flex gap-md">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 active:scale-95 transition-transform" href="/">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 px-xs active:scale-95 transition-transform" href="/teams">Teams</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 px-xs active:scale-95 transition-transform" href="/fixtures">Fixtures</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 px-xs active:scale-95 transition-transform" href="/predictions">Predictions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 px-xs active:scale-95 transition-transform" href="/simulator">Simulator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 px-xs active:scale-95 transition-transform" href="/about">About</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary font-data-value text-data-label px-sm py-xs rounded-full hover:bg-primary-fixed transition-colors">Login</button>
+<img alt="User profile" class="w-10 h-10 rounded-full border border-primary/30" data-alt="A small, professional headshot photo of a male user in his 30s, looking confidently at the camera. The background is a clean, dark gray studio setting. The lighting is crisp and modern, fitting a high-tech sports analytics platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKB7WXolLAudjpi5Bf5_yt_Mkw-0SxRhxvHtdPd_MEkdPeHqar9Tn77E8Jgtgexm6M64VMqkWqqznTVUYForfwlcOuz4-6Ha0jstj6p2fAbAe1G-26F_TwwPxBEubV5W5xsH4Ybu_WE6MQe_6KzzhR70C93dh7NW1rvuAQPXrXWV63_suLgRonLx9HdD183rfUqvPwpj2S0cp1q35WTjTS6MjTpDQgAACzvz3JQ9mAJI3hPIyPyCPsl70RDMAPoj_69kPb8FFCAVg"/>
+</div>
+</div>
+<!-- Mobile Nav Placeholder (Simplified) -->
+<div class="flex justify-between items-center px-sm py-xs md:hidden">
+<div class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter">WorldCupIQ</div>
+<span class="material-symbols-outlined text-primary">menu</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[100px] pb-xl px-sm md:px-lg max-w-container-max mx-auto flex flex-col gap-xl">
+<!-- Hero Section -->
+<section class="relative rounded-xl overflow-hidden glass-panel p-lg md:p-xl flex flex-col items-center justify-center text-center min-h-[614px]">
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 50% 50%, rgba(75, 226, 119, 0.15) 0%, transparent 70%);"></div>
+<div class="relative z-10 max-w-3xl flex flex-col gap-md items-center">
+<div class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-surface-container border border-primary/30 mb-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-label text-data-label text-primary uppercase">Live Model v2.4 Active</span>
+</div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
+                    Predict the World Cup with <span class="text-primary">intelligence</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-sm">
+                    Advanced football analytics using form, squad strength, and expected goals. Outsmart the odds with professional-grade insights.
+                </p>
+<div class="flex flex-wrap gap-md mt-lg justify-center">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-data-value text-data-value hover:bg-primary-fixed hover:scale-105 transition-all shadow-[0_0_15px_rgba(75,226,119,0.3)]">Explore Predictions</button>
+<button class="border border-secondary text-secondary px-lg py-sm rounded-lg font-data-value text-data-value hover:bg-secondary/10 hover:shadow-[0_0_15px_rgba(76,215,246,0.2)] transition-all">Run Simulator</button>
+</div>
+</div>
+</section>
+<!-- Featured Prediction Card -->
+<section class="flex flex-col gap-md">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary">target</span>
+                Featured Matchup
+            </h2>
+<div class="glass-panel rounded-xl p-lg flex flex-col md:flex-row gap-lg items-center relative overflow-hidden neon-glow transition-all duration-300">
+<!-- Background decoration -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Teams -->
+<div class="flex-1 w-full flex items-center justify-between">
+<div class="flex flex-col items-center gap-sm">
+<div class="w-20 h-20 rounded-full bg-surface-container border border-white/10 flex items-center justify-center overflow-hidden">
+<img alt="France Flag" class="w-full h-full object-cover" data-alt="A stylized, high-contrast image of the French national flag waving dynamically. The lighting is cinematic, highlighting the blue, white, and red stripes against a dark, dramatic background. The mood is tense and competitive." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdkdVG0t1pZp8NqDtq055NBkDlt0VFT6VD5szv2Izrt3QwfhYINUrN0xW7UKtWqmOzYIScUqj8o7qXWVO0Tec5N28Cw54lXq33XeZW8LLoF9xPBHZtEdCiNAisqcKi9CVRinMdQc-XWGyBNyA49FOYU7Z6ELD7tv-knYIHzWPKnkm5pdMYemwzoehdZ3xyejStTwgt6_JdF5TZRmCPsx03juFE135lC0_vj12cOsClrDG2g1-mhBQFoDl3AU8hJ_G-HIbn-6x2ixg"/>
+</div>
+<span class="font-data-value text-data-value text-on-surface">France</span>
+</div>
+<div class="flex flex-col items-center px-sm">
+<span class="font-data-label text-data-label text-on-surface-variant mb-xs">Quarter Final</span>
+<span class="font-headline-md text-headline-md text-primary">VS</span>
+</div>
+<div class="flex flex-col items-center gap-sm">
+<div class="w-20 h-20 rounded-full bg-surface-container border border-white/10 flex items-center justify-center overflow-hidden">
+<img alt="Brazil Flag" class="w-full h-full object-cover" data-alt="A stylized, high-contrast image of the Brazilian national flag waving. The cinematic lighting emphasizes the green, yellow, and blue elements against a moody, dark background, conveying a sense of elite athletic competition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO9s6V3snsDiGcNgjWn1XpatjTOZENpnPBFqymMqZlDdMxmQipsojjcTIQZoq4bX5L2NwxjsDi0nWNVuKHCcg5MbSjHQcXMoUuxLGDiSXiCVcP2sDcBmhoXXtVFsUU7b7p9mVDCrlBbOqI2t1GRrd1n6eDcawbG4JmpJ2Z3pCSMy_OazMm7949OON3ApSDeBzhvjwogt1uuMnelG5ZS-G_zSS0BLmrUnZwsSopdqheJ_vfa6UuBZhwVTtU3W654PwoR8Z7JWhzo98"/>
+</div>
+<span class="font-data-value text-data-value text-on-surface">Brazil</span>
+</div>
+</div>
+<!-- Separator line -->
+<div class="hidden md:block w-px h-32 bg-white/10"></div>
+<!-- Data -->
+<div class="flex-1 w-full flex flex-col gap-md">
+<!-- Win Probabilities -->
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-data-label text-data-label text-on-surface-variant">
+<span>FRA Win (42%)</span>
+<span>Draw (28%)</span>
+<span>BRA Win (30%)</span>
+</div>
+<div class="h-2 w-full flex rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 42%;"></div>
+<div class="bg-surface-variant h-full border-x border-background" style="width: 28%;"></div>
+<div class="bg-secondary h-full" style="width: 30%;"></div>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container/50 rounded-lg p-sm border border-white/5">
+<span class="block font-data-label text-data-label text-on-surface-variant mb-xs">Expected Goals (xG)</span>
+<div class="flex justify-between items-end">
+<span class="font-data-value text-data-value text-primary">1.8</span>
+<span class="text-on-surface-variant">-</span>
+<span class="font-data-value text-data-value text-secondary">1.4</span>
+</div>
+</div>
+<div class="bg-surface-container/50 rounded-lg p-sm border border-white/5 flex flex-col justify-between">
+<span class="block font-data-label text-data-label text-on-surface-variant mb-xs">Model Confidence</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-sm">verified</span>
+<span class="font-data-value text-data-value text-on-surface">High <span class="text-primary">(88%)</span></span>
+</div>
+</div>
+</div>
+<!-- AI Insight -->
+<p class="font-body-md text-body-md text-on-surface-variant text-sm border-l-2 border-secondary pl-sm italic">
+                        "France's attacking transition speed gives them a slight edge over Brazil's mid-block structure. Expect early pressure."
+                    </p>
+</div>
+</div>
+</section>
+<!-- Feature Grid -->
+<section class="flex flex-col gap-md">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+                Analytical Capabilities
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Feature 1 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Match Predictions</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Machine-learning driven outcomes for every fixture based on historical data and real-time inputs.</p>
+</div>
+<!-- Feature 2 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center border border-secondary/20">
+<span class="material-symbols-outlined text-secondary">center_focus_strong</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Expected Goals (xG)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Granular shot-quality metrics to understand true offensive performance beyond the final scoreline.</p>
+</div>
+<!-- Feature 3 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary">person</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Likely Scorers</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Player-specific probabilities for finding the net, factoring in positional data and opponent defensive weaknesses.</p>
+</div>
+<!-- Feature 4 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">show_chart</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Team Form</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Momentum indicators analyzing the last 10 matches, weighted for opposition strength and context.</p>
+</div>
+<!-- Feature 5 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center border border-secondary/20">
+<span class="material-symbols-outlined text-secondary">view_comfy_alt</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Tournament Simulator</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Monte Carlo simulations running 10,000 tournament iterations to forecast group stage and knockout bracket paths.</p>
+</div>
+<!-- Feature 6 -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-on-surface">info</span>
+</div>
+<h3 class="font-data-value text-data-value text-on-surface">Model Explanation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Transparent insights into which variables (fatigue, injuries, weather) are driving our current predictions.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest text-primary font-body-md text-body-md w-full py-xl border-t border-white/10">
+<div class="max-w-container-max mx-auto px-lg grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+<div class="flex flex-col gap-xs">
+<div class="font-headline-md text-headline-md text-primary">WorldCupIQ</div>
+<p class="text-on-surface-variant text-sm">© 2024 WorldCupIQ Analytics. Professional Grade Predictions.</p>
+</div>
+<div class="flex flex-wrap gap-md md:justify-end">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Data Methodology</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">API Access</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+</footer>
+</body></html>

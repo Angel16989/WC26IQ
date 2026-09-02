@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a1",
+    "homeTeamId": "arg",
+    "awayTeamId": "jpn",
+    "kickoffUtc": "2026-06-15T18:00:00Z",
+    "venue": "MetLife Stadium",
+    "stage": "group",
+    "group": "A",
+    "status": "scheduled"
+  },
+  {
+    "id": "a2",
+    "homeTeamId": "usa",
+    "awayTeamId": "sen",
+    "kickoffUtc": "2026-06-16T01:00:00Z",
+    "venue": "SoFi Stadium",
+    "stage": "group",
+    "group": "A",
+    "status": "scheduled"
+  },
+  {
+    "id": "a3",
+    "homeTeamId": "arg",
+    "awayTeamId": "usa",
+    "kickoffUtc": "2026-06-20T22:00:00Z",
+    "venue": "Mercedes-Benz Stadium",
+    "stage": "group",
+    "group": "A",
+    "status": "scheduled"
+  },
+  {
+    "id": "a4",
+    "homeTeamId": "jpn",
+    "awayTeamId": "sen",
+    "kickoffUtc": "2026-06-21T02:00:00Z",
+    "venue": "Lumen Field",
+    "stage": "group",
+    "group": "A",
+    "status": "scheduled"
+  },
+  {
+    "id": "b1",
+    "homeTeamId": "fra",
+    "awayTeamId": "mex",
+    "kickoffUtc": "2026-06-17T19:00:00Z",
+    "venue": "NRG Stadium",
+    "stage": "group",
+    "group": "B",
+    "status": "scheduled"
+  },
+  {
+    "id": "b2",
+    "homeTeamId": "kor",
+    "awayTeamId": "uru",
+    "kickoffUtc": "2026-06-18T00:00:00Z",
+    "venue": "Hard Rock Stadium",
+    "stage": "group",
+    "group": "B",
+    "status": "scheduled"
+  }
+]

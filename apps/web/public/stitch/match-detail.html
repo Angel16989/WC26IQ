@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<base target="_top"/>
+<title>Match Detail - WorldCupIQ Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Sora:wght@600;700;800&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#4ae176",
+                        "surface-tint": "#4ae176",
+                        "on-tertiary": "#402d00",
+                        "surface-container-highest": "#2e3447",
+                        "on-primary-fixed-variant": "#005321",
+                        "surface": "#0c1324",
+                        "on-tertiary-fixed": "#261a00",
+                        "secondary-container": "#03b5d3",
+                        "on-primary-container": "#004b1e",
+                        "on-error": "#690005",
+                        "primary-container": "#22c55e",
+                        "primary-fixed": "#6bff8f",
+                        "surface-container-lowest": "#070d1f",
+                        "on-secondary-fixed": "#001f26",
+                        "on-surface-variant": "#bccbb9",
+                        "surface-dim": "#0c1324",
+                        "primary": "#4be277",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "secondary": "#4cd7f6",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "tertiary-container": "#daa300",
+                        "surface-bright": "#33394c",
+                        "on-primary": "#003915",
+                        "on-secondary": "#003640",
+                        "on-surface": "#dce1fb",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#151b2d",
+                        "surface-container": "#191f31",
+                        "outline-variant": "#3d4a3d",
+                        "inverse-primary": "#006e2f",
+                        "surface-variant": "#2e3447",
+                        "on-tertiary-container": "#533c00",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "tertiary-fixed": "#ffdf9f",
+                        "on-secondary-container": "#00424e",
+                        "inverse-surface": "#dce1fb",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#f9bd22",
+                        "background": "#0c1324",
+                        "on-background": "#dce1fb",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#002109",
+                        "secondary-fixed": "#acedff",
+                        "surface-container-high": "#23293c",
+                        "tertiary": "#fabe22",
+                        "outline": "#869585",
+                        "inverse-on-surface": "#2a3043"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "20px",
+                        "container-max": "1440px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "base": "4px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "data-label": ["JetBrains Mono"],
+                        "headline-md": ["Sora"],
+                        "data-value": ["Sora"],
+                        "display-lg": ["Sora"],
+                        "body-lg": ["Inter"],
+                        "display-lg-mobile": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "data-label": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "data-value": ["20px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .perspective-wrapper {
+            perspective: 1200px;
+        }
+        .glass-panel {
+            background-color: theme('colors.surface-container');
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-4px) translateZ(24px) rotateX(1deg) rotateY(-1deg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(74, 225, 118, 0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .pop-out {
+            transform: translateZ(30px);
+            transition: transform 0.4s ease;
+        }
+        .glass-panel:hover .pop-out {
+            transform: translateZ(50px);
+        }
+        .neon-trace {
+            stroke: theme('colors.primary');
+            stroke-width: 2px;
+            filter: drop-shadow(0 0 4px theme('colors.primary'));
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden bg-background">
+<!-- Top Navigation from Shared Components -->
+<nav class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/10 shadow-[0_0_20px_rgba(74,225,118,0.1)]">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter">
+                WorldCupIQ
+            </div>
+<div class="hidden md:flex gap-md font-body-md text-body-md items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 p-sm rounded-lg" href="/">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 p-sm rounded-lg" href="/teams">Teams</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 p-sm rounded-lg" href="/fixtures">Fixtures</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 p-sm rounded-lg" href="/predictions">Predictions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 p-sm rounded-lg" href="/simulator">Simulator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-bright/50 transition-all duration-300 p-sm rounded-lg" href="/about">About</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-primary bg-transparent border border-primary px-sm py-xs rounded-full font-data-label text-data-label hover:bg-primary/10 transition-colors hidden md:block">
+<span class="material-symbols-outlined align-middle mr-1 text-sm">search</span>Search
+                 </button>
+<button class="bg-primary text-on-primary font-data-label text-data-label px-md py-xs rounded-full hover:bg-primary-fixed transition-colors active:scale-95 transition-transform">
+                    Login
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[100px] pb-xl px-sm md:px-lg max-w-container-max mx-auto w-full flex flex-col gap-xl bg-background perspective-wrapper">
+<!-- Match Header (HUD Style) -->
+<header class="glass-panel rounded-xl p-lg relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-lg bg-surface-container">
+<!-- Team A -->
+<div class="flex flex-col items-center gap-sm z-10 w-full md:w-1/3 pop-out">
+<div class="w-32 h-32 rounded-full border-2 border-surface-variant overflow-hidden bg-surface-container-high flex items-center justify-center relative shadow-xl">
+<img alt="Brazil Flag" class="w-full h-full object-cover opacity-90 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP_cA5F08_N3UT8cIHVolIVzvZhZ7CjPAQ-2X2sbleIN9SkLnbYA4jnwuQQE9JpMtBmwDQJ9EUzHTZ6nxufc_8WUITvB-eCTa3K4s1hfhlGcL5s26vk3ThAzGWMQlO6TM7td50RsWKSqoVLnX1Q39QFuweOQOxHDxOBZGFB4uiyF7txVIpGrRStIR9kFCi8KiIU1tLHzovUGt5kBA5hF-qtztQuJwt-xUcWk1pcwLLCn6nvmS8Zkgag2ghh9Pg7bfv55nvoix04vo"/>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface text-center drop-shadow-md">Brazil</h2>
+<span class="font-data-label text-data-label text-primary bg-primary/10 px-sm py-xs rounded-full border border-primary/20 shadow-sm">Win Prob: 68%</span>
+</div>
+<!-- VS & Center Details -->
+<div class="flex flex-col items-center gap-md z-10 w-full md:w-1/3 pop-out">
+<div class="font-data-label text-data-label text-on-surface-variant bg-surface-container-high px-md py-xs rounded-full shadow-inner">
+                    Quarter-Finals • Lusail Stadium
+                </div>
+<div class="font-display-lg text-display-lg text-secondary opacity-60 tracking-widest drop-shadow-lg">
+                    VS
+                </div>
+<div class="font-headline-md text-headline-md text-on-surface text-center drop-shadow-md">
+                    Match Analysis
+                </div>
+</div>
+<!-- Team B -->
+<div class="flex flex-col items-center gap-sm z-10 w-full md:w-1/3 pop-out">
+<div class="w-32 h-32 rounded-full border-2 border-surface-variant overflow-hidden bg-surface-container-high flex items-center justify-center relative shadow-xl">
+<img alt="Croatia Flag" class="w-full h-full object-cover opacity-90 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtPCnbHHePG9qUp6VUUSl7oTYsFmx5ytqwxcPvnjbe3lp4jm6kTbVrQPp46IQPeKAYrj3C8k16Nc4lmWeKAwC1_goEhctKWdzpJ_Ke-MJF-NRdOKG1XIiC_xkGF4XEIluyxdwci84upNNRTy9kuXOMUHKWgV8w3iVPRsuWpI98pcwVOOYuNoarH33zCZlGa2YlEWaGngVvnb-ytwSvfI7nfI8NvQV9pm6s8azoQQ1YCRSuHLMPwArrq6XQaCKwcPqL7rq5RC3yJug"/>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface text-center drop-shadow-md">Croatia</h2>
+<span class="font-data-label text-data-label text-secondary bg-secondary/10 px-sm py-xs rounded-full border border-secondary/20 shadow-sm">Win Prob: 15%</span>
+</div>
+<!-- Draw Prob -->
+<div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pop-out">
+<span class="font-data-label text-data-label text-on-surface-variant">Draw Prob: 17%</span>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Left Column: Squad Strength & Form (4 cols) -->
+<div class="col-span-1 md:col-span-4 flex flex-col gap-lg">
+<!-- Squad Strength Radar Concept -->
+<section class="glass-panel rounded-xl p-md flex flex-col gap-md">
+<div class="flex items-center gap-xs pop-out">
+<span class="material-symbols-outlined text-secondary drop-shadow-sm">radar</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Squad Strength</h3>
+</div>
+<div class="flex flex-col gap-sm mt-sm pop-out">
+<!-- Attack -->
+<div class="flex flex-col gap-base">
+<div class="flex justify-between font-data-label text-data-label text-on-surface-variant">
+<span class="">Attack</span>
+<span class="">BR 92 <span class="text-surface-variant mx-1">|</span> HR 76</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex shadow-inner">
+<div class="h-full bg-primary shadow-[0_0_8px_rgba(75,226,119,0.5)]" style="width: 92%;"></div>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex mt-1 shadow-inner">
+<div class="h-full bg-secondary shadow-[0_0_8px_rgba(76,215,246,0.5)]" style="width: 76%;"></div>
+</div>
+</div>
+<!-- Midfield -->
+<div class="flex flex-col gap-base mt-xs">
+<div class="flex justify-between font-data-label text-data-label text-on-surface-variant">
+<span class="">Midfield</span>
+<span class="">BR 85 <span class="text-surface-variant mx-1">|</span> HR 88</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex shadow-inner">
+<div class="h-full bg-primary shadow-[0_0_8px_rgba(75,226,119,0.5)]" style="width: 85%;"></div>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex mt-1 shadow-inner">
+<div class="h-full bg-secondary shadow-[0_0_8px_rgba(76,215,246,0.5)]" style="width: 88%;"></div>
+</div>
+</div>
+<!-- Defence -->
+<div class="flex flex-col gap-base mt-xs">
+<div class="flex justify-between font-data-label text-data-label text-on-surface-variant">
+<span class="">Defence</span>
+<span class="">BR 81 <span class="text-surface-variant mx-1">|</span> HR 84</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex shadow-inner">
+<div class="h-full bg-primary shadow-[0_0_8px_rgba(75,226,119,0.5)]" style="width: 81%;"></div>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full overflow-hidden flex mt-1 shadow-inner">
+<div class="h-full bg-secondary shadow-[0_0_8px_rgba(76,215,246,0.5)]" style="width: 84%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Form -->
+<section class="glass-panel rounded-xl p-md flex flex-col gap-md">
+<div class="flex items-center gap-xs pop-out">
+<span class="material-symbols-outlined text-primary drop-shadow-sm">history</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Form</h3>
+</div>
+<div class="flex flex-col gap-md mt-sm pop-out">
+<!-- Brazil Form -->
+<div class="flex items-center justify-between">
+<span class="font-data-label text-data-label text-on-surface">Brazil</span>
+<div class="flex gap-xs">
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+<div class="w-8 h-8 rounded bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">D</div>
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+</div>
+</div>
+<!-- Croatia Form -->
+<div class="flex items-center justify-between">
+<span class="font-data-label text-data-label text-on-surface">Croatia</span>
+<div class="flex gap-xs">
+<div class="w-8 h-8 rounded bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">D</div>
+<div class="w-8 h-8 rounded bg-secondary-container text-on-secondary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+<div class="w-8 h-8 rounded bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">D</div>
+<div class="w-8 h-8 rounded bg-secondary-container text-on-secondary-container flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">W</div>
+<div class="w-8 h-8 rounded bg-error/20 text-error flex items-center justify-center font-data-label text-data-label font-bold shadow-sm">L</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Middle Column: Analytics & xG (8 cols) -->
+<div class="col-span-1 md:col-span-8 flex flex-col gap-lg">
+<!-- Expected Goals (xG) Timeline Simulation -->
+<section class="glass-panel rounded-xl p-md flex flex-col gap-md relative overflow-hidden h-64 md:h-80">
+<div class="flex items-center justify-between z-10 relative pop-out">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-tertiary drop-shadow-sm">show_chart</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Expected Goals (xG) Projection</h3>
+</div>
+<span class="font-data-label text-data-label text-on-surface-variant border border-surface-variant px-sm py-xs rounded-md bg-surface/50 backdrop-blur-md">Simulation v2.4</span>
+</div>
+<!-- Placeholder for Chart -->
+<div class="absolute inset-0 pt-xl px-md pb-md z-0 flex items-end">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between pt-xl pb-md px-md opacity-20">
+<div class="border-b border-white w-full"></div>
+<div class="border-b border-white w-full"></div>
+<div class="border-b border-white w-full"></div>
+<div class="border-b border-white w-full"></div>
+</div>
+<!-- SVG Line chart simulation -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="neon-trace" d="M0,90 Q20,85 40,60 T80,30 T100,10" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M0,95 Q30,90 50,85 T90,70 T100,65" fill="none" stroke="theme('colors.secondary')" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="filter: drop-shadow(0 0 4px theme('colors.secondary'));"></path>
+</svg>
+</div>
+</section>
+<!-- 2-col split for Model Panel and Scorers -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Key Factors Panel -->
+<section class="glass-panel rounded-xl p-md flex flex-col gap-md">
+<div class="flex items-center gap-xs pop-out">
+<span class="material-symbols-outlined text-error drop-shadow-sm">warning</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Model Modifiers</h3>
+</div>
+<ul class="flex flex-col gap-sm mt-sm pop-out">
+<li class="flex items-start gap-sm bg-surface-container p-sm rounded-lg border border-surface-variant shadow-md">
+<span class="material-symbols-outlined text-primary text-base">arrow_upward</span>
+<div>
+<div class="font-data-value text-data-value text-on-surface text-sm">High Line Exploitation</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Brazil's wing speed highly effective against Croatia's projected high defensive line. (+12% Win Prob)</div>
+</div>
+</li>
+<li class="flex items-start gap-sm bg-surface-container p-sm rounded-lg border border-surface-variant shadow-md">
+<span class="material-symbols-outlined text-error text-base">arrow_downward</span>
+<div>
+<div class="font-data-value text-data-value text-on-surface text-sm">Midfield Fatigue</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs mt-1">Croatia's core midfield trio logged 120 mins in previous match. Stamina metrics project drop-off after 60 mins.</div>
+</div>
+</li>
+</ul>
+</section>
+<!-- Likely Scorers -->
+<section class="glass-panel rounded-xl p-md flex flex-col gap-md">
+<div class="flex items-center gap-xs pop-out">
+<span class="material-symbols-outlined text-tertiary drop-shadow-sm">sports_soccer</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Anytime Scorer</h3>
+</div>
+<div class="flex flex-col gap-sm mt-sm font-data-label text-data-label pop-out">
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-high rounded transition-colors border border-transparent hover:border-surface-variant shadow-sm hover:shadow-md">
+<span class="text-on-surface">Vini Jr. (BR)</span>
+<span class="text-primary font-bold">42%</span>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-high rounded transition-colors border border-transparent hover:border-surface-variant shadow-sm hover:shadow-md">
+<span class="text-on-surface">Richarlison (BR)</span>
+<span class="text-primary font-bold">38%</span>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-high rounded transition-colors border border-transparent hover:border-surface-variant shadow-sm hover:shadow-md">
+<span class="text-on-surface">Neymar (BR)</span>
+<span class="text-primary font-bold">35%</span>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-high rounded transition-colors border border-transparent hover:border-surface-variant shadow-sm hover:shadow-md">
+<span class="text-on-surface">Kramarić (HR)</span>
+<span class="text-secondary font-bold">22%</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer from Shared Components -->
+<footer class="bg-surface-container-lowest w-full py-xl border-t border-white/10 flat mt-xl">
+<div class="max-w-container-max mx-auto px-lg grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+<div class="flex flex-col gap-sm">
+<div class="font-headline-md text-headline-md text-primary">
+                    WorldCupIQ
+                </div>
+<div class="font-body-md text-body-md text-on-surface-variant">
+                    © 2024 WorldCupIQ Analytics. Professional Grade Predictions.
+                </div>
+<div class="font-data-label text-data-label text-error mt-sm opacity-80">
+                    Predictions are analytical estimates based on statistical models, not guarantees. Bet responsibly.
+                </div>
+</div>
+<div class="flex flex-wrap gap-md font-body-md text-body-md md:justify-end">
+<a class="text-on-surface-variant hover:text-on-surface hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-primary transition-colors" href="#">Data Methodology</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-primary transition-colors" href="#">API Access</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+</footer>
+</body></html>

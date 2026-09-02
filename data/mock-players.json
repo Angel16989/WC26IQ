@@ -1,0 +1,162 @@
+[
+  {
+    "id": "arg-alvarez",
+    "teamId": "arg",
+    "name": "Julian Alvarez",
+    "position": "FW",
+    "club": "Manchester City",
+    "clubFormIndex": 86,
+    "goalThreat": 0.74,
+    "likelyStarter": true
+  },
+  {
+    "id": "arg-macallister",
+    "teamId": "arg",
+    "name": "Alexis Mac Allister",
+    "position": "MF",
+    "club": "Liverpool",
+    "clubFormIndex": 79,
+    "goalThreat": 0.33,
+    "likelyStarter": true
+  },
+  {
+    "id": "jpn-mitoma",
+    "teamId": "jpn",
+    "name": "Kaoru Mitoma",
+    "position": "FW",
+    "club": "Brighton",
+    "clubFormIndex": 75,
+    "goalThreat": 0.58,
+    "likelyStarter": true
+  },
+  {
+    "id": "jpn-kamada",
+    "teamId": "jpn",
+    "name": "Daichi Kamada",
+    "position": "MF",
+    "club": "Lazio",
+    "clubFormIndex": 70,
+    "goalThreat": 0.36,
+    "likelyStarter": true
+  },
+  {
+    "id": "usa-pulisic",
+    "teamId": "usa",
+    "name": "Christian Pulisic",
+    "position": "FW",
+    "club": "AC Milan",
+    "clubFormIndex": 78,
+    "goalThreat": 0.61,
+    "likelyStarter": true
+  },
+  {
+    "id": "usa-balogun",
+    "teamId": "usa",
+    "name": "Folarin Balogun",
+    "position": "FW",
+    "club": "Monaco",
+    "clubFormIndex": 73,
+    "goalThreat": 0.57,
+    "likelyStarter": true
+  },
+  {
+    "id": "sen-jackson",
+    "teamId": "sen",
+    "name": "Nicolas Jackson",
+    "position": "FW",
+    "club": "Chelsea",
+    "clubFormIndex": 72,
+    "goalThreat": 0.56,
+    "likelyStarter": true
+  },
+  {
+    "id": "sen-sarr",
+    "teamId": "sen",
+    "name": "Ismaila Sarr",
+    "position": "FW",
+    "club": "Marseille",
+    "clubFormIndex": 74,
+    "goalThreat": 0.49,
+    "likelyStarter": true
+  },
+  {
+    "id": "fra-mbappe",
+    "teamId": "fra",
+    "name": "Kylian Mbappe",
+    "position": "FW",
+    "club": "Real Madrid",
+    "clubFormIndex": 91,
+    "goalThreat": 0.88,
+    "likelyStarter": true
+  },
+  {
+    "id": "fra-dembele",
+    "teamId": "fra",
+    "name": "Ousmane Dembele",
+    "position": "FW",
+    "club": "Paris Saint-Germain",
+    "clubFormIndex": 82,
+    "goalThreat": 0.51,
+    "likelyStarter": true
+  },
+  {
+    "id": "mex-gimenez",
+    "teamId": "mex",
+    "name": "Santiago Gimenez",
+    "position": "FW",
+    "club": "Feyenoord",
+    "clubFormIndex": 77,
+    "goalThreat": 0.63,
+    "likelyStarter": true
+  },
+  {
+    "id": "mex-chavez",
+    "teamId": "mex",
+    "name": "Luis Chavez",
+    "position": "MF",
+    "club": "Dinamo Moscow",
+    "clubFormIndex": 69,
+    "goalThreat": 0.29,
+    "likelyStarter": true
+  },
+  {
+    "id": "kor-son",
+    "teamId": "kor",
+    "name": "Son Heung-min",
+    "position": "FW",
+    "club": "Tottenham Hotspur",
+    "clubFormIndex": 84,
+    "goalThreat": 0.76,
+    "likelyStarter": true
+  },
+  {
+    "id": "kor-hwang",
+    "teamId": "kor",
+    "name": "Hwang Hee-chan",
+    "position": "FW",
+    "club": "Wolverhampton Wanderers",
+    "clubFormIndex": 72,
+    "goalThreat": 0.47,
+    "likelyStarter": true
+  },
+  {
+    "id": "uru-nunez",
+    "teamId": "uru",
+    "name": "Darwin Nunez",
+    "position": "FW",
+    "club": "Liverpool",
+    "clubFormIndex": 79,
+    "goalThreat": 0.72,
+    "likelyStarter": true
+  },
+  {
+    "id": "uru-valverde",
+    "teamId": "uru",
+    "name": "Federico Valverde",
+    "position": "MF",
+    "club": "Real Madrid",
+    "clubFormIndex": 85,
+    "goalThreat": 0.38,
+    "likelyStarter": true
+  }
+]

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<base target="_top"/>
+<title>Team Profile - WorldCupIQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Sora:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#4ae176",
+                    "surface-tint": "#4ae176",
+                    "on-tertiary": "#402d00",
+                    "surface-container-highest": "#2e3447",
+                    "on-primary-fixed-variant": "#005321",
+                    "surface": "#0c1324",
+                    "on-tertiary-fixed": "#261a00",
+                    "secondary-container": "#03b5d3",
+                    "on-primary-container": "#004b1e",
+                    "on-error": "#690005",
+                    "primary-container": "#22c55e",
+                    "primary-fixed": "#6bff8f",
+                    "surface-container-lowest": "#070d1f",
+                    "on-secondary-fixed": "#001f26",
+                    "on-surface-variant": "#bccbb9",
+                    "surface-dim": "#0c1324",
+                    "primary": "#4be277",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "secondary": "#4cd7f6",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "tertiary-container": "#daa300",
+                    "surface-bright": "#33394c",
+                    "on-primary": "#003915",
+                    "on-secondary": "#003640",
+                    "on-surface": "#dce1fb",
+                    "error-container": "#93000a",
+                    "surface-container-low": "#151b2d",
+                    "surface-container": "#191f31",
+                    "outline-variant": "#3d4a3d",
+                    "inverse-primary": "#006e2f",
+                    "surface-variant": "#2e3447",
+                    "on-tertiary-container": "#533c00",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "tertiary-fixed": "#ffdf9f",
+                    "on-secondary-container": "#00424e",
+                    "inverse-surface": "#dce1fb",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#f9bd22",
+                    "background": "#0c1324",
+                    "on-background": "#dce1fb",
+                    "error": "#ffb4ab",
+                    "on-primary-fixed": "#002109",
+                    "secondary-fixed": "#acedff",
+                    "surface-container-high": "#23293c",
+                    "tertiary": "#fabe22",
+                    "outline": "#869585",
+                    "inverse-on-surface": "#2a3043"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "20px",
+                    "container-max": "1440px",
+                    "xs": "8px",
+                    "md": "24px",
+                    "base": "4px",
+                    "sm": "16px",
+                    "xl": "64px",
+                    "lg": "40px"
+            },
+            "fontFamily": {
+                    "data-label": ["JetBrains Mono"],
+                    "headline-md": ["Sora"],
+                    "data-value": ["Sora"],
+                    "display-lg": ["Sora"],
+                    "body-lg": ["Inter"],
+                    "display-lg-mobile": ["Sora"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "data-label": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                    "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                    "data-value": ["20px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                    "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                    "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                    "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }],
+                    "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #0c1324;
+            color: #dce1fb;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(74, 225, 118, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(76, 215, 246, 0.05) 0%, transparent 60%);
+        }
+        
+        .perspective-container {
+            perspective: 1500px;
+        }
+        
+        .glass-panel {
+            background: rgba(12, 19, 36, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+        }
+        
+        .glow-hover {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .glow-hover:hover {
+            transform: translateY(-5px) translateZ(20px) rotateX(2deg) rotateY(-1deg);
+            box-shadow: -10px 25px 50px rgba(0, 0, 0, 0.6), 0 0 25px rgba(76, 215, 246, 0.2);
+            border-color: rgba(76, 215, 246, 0.4);
+        }
+        
+        .neon-bar {
+            background: linear-gradient(90deg, #020617 0%, #4be277 100%);
+            box-shadow: 0 0 10px rgba(75, 226, 119, 0.3);
+        }
+        
+        .neon-bar-def {
+            background: linear-gradient(90deg, #020617 0%, #4cd7f6 100%);
+            box-shadow: 0 0 10px rgba(76, 215, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar -->
+<nav class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/10 shadow-[0_0_20px_rgba(74,225,118,0.1)]">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+<div class="flex items-center gap-xl">
+<a class="font-headline-md text-headline-md font-extrabold text-primary tracking-tighter" href="/">WorldCupIQ</a>
+<div class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md px-sm py-xs" href="/">Home</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md px-sm py-xs active:scale-95 transition-transform hover:bg-surface-bright/50 duration-300" href="/teams">Teams</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md px-sm py-xs" href="/fixtures">Fixtures</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md px-sm py-xs" href="/predictions">Predictions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md px-sm py-xs" href="/simulator">Simulator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md px-sm py-xs" href="/about">About</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary p-xs"><span class="material-symbols-outlined">search</span></button>
+<button class="bg-primary text-on-primary font-data-label text-data-label px-md py-xs rounded-lg hover:brightness-110 transition-all">Login</button>
+</div>
+</div>
+</nav>
+<!-- Main Layout Grid -->
+<div class="flex-grow pt-24 pb-xl max-w-container-max mx-auto w-full px-sm md:px-lg flex gap-lg perspective-container">
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col w-64 shrink-0 glass-panel rounded-xl h-[calc(100vh-120px)] sticky top-28 p-md">
+<div class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-primary">Scouting Room</h2>
+<p class="font-data-label text-data-label text-on-surface-variant mt-xs">Elite Tier Access</p>
+</div>
+<nav class="flex flex-col gap-xs flex-grow">
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-xs my-base p-sm flex items-center gap-md font-data-label text-data-label hover:glow-secondary transition-shadow hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">sports_soccer</span> All Matches
+                </a>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-xs my-base p-sm flex items-center gap-md font-data-label text-data-label hover:glow-secondary transition-shadow hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">reorder</span> Group Stage
+                </a>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-xs my-base p-sm flex items-center gap-md font-data-label text-data-label hover:glow-secondary transition-shadow hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">emoji_events</span> Knockouts
+                </a>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-xs my-base p-sm flex items-center gap-md font-data-label text-data-label hover:glow-secondary transition-shadow hover:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">analytics</span> My Picks
+                </a>
+<div class="mt-auto">
+<button class="w-full bg-secondary-container text-on-secondary-container font-data-label text-data-label py-sm rounded-xl hover:brightness-110 transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined">play_arrow</span> Run Simulation
+                    </button>
+<a class="text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-xs my-base p-sm flex items-center gap-md font-data-label text-data-label hover:glow-secondary transition-shadow hover:translate-x-1 transition-transform mt-sm" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+                    </a>
+</div>
+</nav>
+</aside>
+<!-- Canvas Area -->
+<main class="flex-grow flex flex-col gap-lg min-w-0">
+<!-- Hero Header: Overview -->
+<header class="glass-panel rounded-xl p-lg flex flex-col md:flex-row gap-lg items-center relative overflow-hidden group glow-hover transition-all duration-300">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="w-32 h-32 md:w-48 md:h-48 shrink-0 rounded-full bg-surface-container-highest border-4 border-surface-tint p-xs relative z-10 flex items-center justify-center shadow-[0_0_30px_rgba(74,225,118,0.2)]">
+<!-- Placeholder for Team Badge -->
+<span class="material-symbols-outlined text-[64px] text-surface-tint opacity-50">shield</span>
+</div>
+<div class="flex-grow flex flex-col items-center md:items-start text-center md:text-left z-10" style="transform: translateZ(10px);">
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-data-label text-data-label px-sm py-base rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant">FIFA Rank #4</span>
+<span class="font-data-label text-data-label px-sm py-base rounded-full bg-primary/10 text-primary border border-primary/30">Qualified</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-md">France</h1>
+<div class="grid grid-cols-2 gap-md w-full max-w-md">
+<div class="bg-surface/50 p-sm rounded-lg border border-white/5">
+<p class="font-data-label text-data-label text-on-surface-variant mb-base">Squad Value</p>
+<p class="font-data-value text-data-value text-secondary">€1.05B</p>
+</div>
+<div class="bg-surface/50 p-sm rounded-lg border border-white/5">
+<p class="font-data-label text-data-label text-on-surface-variant mb-base">Win Prob.</p>
+<p class="font-data-value text-data-value text-primary">18.4%</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md lg:gap-lg">
+<!-- Performance Metrics -->
+<section class="lg:col-span-2 flex flex-col gap-md">
+<!-- Squad Strength -->
+<div class="glass-panel rounded-xl p-md glow-hover transition-all duration-300">
+<div class="flex items-center justify-between mb-lg" style="transform: translateZ(10px);">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary">radar</span> Squad Strength
+                            </h3>
+<span class="font-data-value text-data-value text-primary">OVR 88</span>
+</div>
+<div class="flex flex-col gap-sm" style="transform: translateZ(15px);">
+<div class="flex items-center gap-md">
+<span class="w-16 font-data-label text-data-label text-on-surface-variant">ATT</span>
+<div class="flex-grow h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full neon-bar w-[92%] rounded-full"></div>
+</div>
+<span class="w-8 text-right font-data-value text-data-value text-on-surface">92</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="w-16 font-data-label text-data-label text-on-surface-variant">MID</span>
+<div class="flex-grow h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full neon-bar w-[88%] rounded-full opacity-80"></div>
+</div>
+<span class="w-8 text-right font-data-value text-data-value text-on-surface">88</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="w-16 font-data-label text-data-label text-on-surface-variant">DEF</span>
+<div class="flex-grow h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full neon-bar-def w-[85%] rounded-full"></div>
+</div>
+<span class="w-8 text-right font-data-value text-data-value text-on-surface">85</span>
+</div>
+</div>
+</div>
+<!-- Recent Form & Future Projection -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Form -->
+<div class="glass-panel rounded-xl p-md glow-hover transition-all duration-300">
+<h3 class="font-headline-md text-[20px] text-on-surface mb-md" style="transform: translateZ(10px);">Recent Form</h3>
+<div class="flex gap-xs items-center justify-between mt-lg" style="transform: translateZ(15px);">
+<div class="w-10 h-10 rounded-lg bg-primary/20 text-primary border border-primary flex items-center justify-center font-data-value text-data-value">W</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full"></div>
+<div class="w-10 h-10 rounded-lg bg-primary/20 text-primary border border-primary flex items-center justify-center font-data-value text-data-value">W</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full"></div>
+<div class="w-10 h-10 rounded-lg bg-tertiary/20 text-tertiary border border-tertiary flex items-center justify-center font-data-value text-data-value">D</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full"></div>
+<div class="w-10 h-10 rounded-lg bg-error/20 text-error border border-error flex items-center justify-center font-data-value text-data-value">L</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full"></div>
+<div class="w-10 h-10 rounded-lg bg-primary/20 text-primary border border-primary flex items-center justify-center font-data-value text-data-value">W</div>
+</div>
+</div>
+<!-- Projection -->
+<div class="glass-panel rounded-xl p-md glow-hover transition-all duration-300 relative overflow-hidden">
+<div class="absolute inset-0 bg-secondary/5 opacity-50"></div>
+<div style="transform: translateZ(10px);">
+<h3 class="font-headline-md text-[20px] text-on-surface mb-xs relative z-10">IQ Projection</h3>
+<p class="font-data-label text-data-label text-on-surface-variant mb-md relative z-10">Expected Exit Stage</p>
+<div class="flex items-center gap-md relative z-10 mt-sm" style="transform: translateZ(15px);">
+<span class="material-symbols-outlined text-[40px] text-secondary">trending_up</span>
+<div>
+<div class="font-data-value text-[24px] text-secondary">Semi-Finals</div>
+<div class="font-data-label text-data-label text-on-surface-variant">42% probability</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Players Column -->
+<aside class="lg:col-span-1 flex flex-col gap-md">
+<div class="glass-panel rounded-xl p-md h-full flex flex-col glow-hover transition-all duration-300">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-lg flex items-center gap-xs" style="transform: translateZ(10px);">
+<span class="material-symbols-outlined text-primary">star</span> Key Personnel
+                        </h3>
+<div class="flex flex-col gap-sm flex-grow" style="transform: translateZ(15px);">
+<!-- Player 1 -->
+<div class="bg-surface-container-highest/50 rounded-lg p-sm flex items-center gap-sm border border-white/5 hover:border-primary/30 transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface border border-outline-variant flex items-center justify-center shrink-0 overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">person</span>
+</div>
+<div class="flex-grow">
+<div class="font-data-value text-[16px] text-on-surface">K. Mbappé</div>
+<div class="font-data-label text-[12px] text-on-surface-variant">FWD • Top Scorer</div>
+</div>
+<div class="text-right">
+<div class="font-data-value text-data-value text-primary">9.2</div>
+<div class="font-data-label text-[10px] text-on-surface-variant uppercase">Rating</div>
+</div>
+</div>
+<!-- Player 2 -->
+<div class="bg-surface-container-highest/50 rounded-lg p-sm flex items-center gap-sm border border-white/5 hover:border-secondary/30 transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface border border-outline-variant flex items-center justify-center shrink-0 overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary transition-colors">person</span>
+</div>
+<div class="flex-grow">
+<div class="font-data-value text-[16px] text-on-surface">A. Griezmann</div>
+<div class="font-data-label text-[12px] text-on-surface-variant">MID • Top Assists</div>
+</div>
+<div class="text-right">
+<div class="font-data-value text-data-value text-secondary">8.8</div>
+<div class="font-data-label text-[10px] text-on-surface-variant uppercase">Rating</div>
+</div>
+</div>
+<!-- Player 3 -->
+<div class="bg-surface-container-highest/50 rounded-lg p-sm flex items-center gap-sm border border-white/5 hover:border-tertiary/30 transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-surface border border-outline-variant flex items-center justify-center shrink-0 overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">person</span>
+</div>
+<div class="flex-grow">
+<div class="font-data-value text-[16px] text-on-surface">W. Saliba</div>
+<div class="font-data-label text-[12px] text-on-surface-variant">DEF • Key Anchor</div>
+</div>
+<div class="text-right">
+<div class="font-data-value text-data-value text-on-surface">8.5</div>
+<div class="font-data-label text-[10px] text-on-surface-variant uppercase">Rating</div>
+</div>
+</div>
+</div>
+<button class="mt-md w-full py-xs border border-primary/50 text-primary font-data-label text-data-label rounded-lg hover:bg-primary/10 transition-colors" style="transform: translateZ(10px);">
+                            View Full Squad
+                        </button>
+</div>
+</aside>
+</div>
+<!-- Upcoming Fixtures -->
+<section class="glass-panel rounded-xl p-md glow-hover transition-all duration-300">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-xs" style="transform: translateZ(10px);">
+<span class="material-symbols-outlined text-on-surface-variant">calendar_month</span> Upcoming Fixtures
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-sm" style="transform: translateZ(15px);">
+<div class="bg-surface-container/50 border border-white/5 rounded-lg p-sm flex flex-col justify-between hover:border-white/20 transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-data-label text-[12px] text-on-surface-variant">Matchday 1</span>
+<span class="font-data-label text-[12px] text-secondary">Jun 14</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-data-value text-[16px] text-on-surface font-bold">FRA</span>
+<span class="font-data-label text-[14px] text-on-surface-variant bg-surface-container-highest px-xs rounded">VS</span>
+<span class="font-data-value text-[16px] text-on-surface-variant">AUT</span>
+</div>
+</div>
+<div class="bg-surface-container/50 border border-white/5 rounded-lg p-sm flex flex-col justify-between hover:border-white/20 transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-data-label text-[12px] text-on-surface-variant">Matchday 2</span>
+<span class="font-data-label text-[12px] text-secondary">Jun 19</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-data-value text-[16px] text-on-surface-variant">NED</span>
+<span class="font-data-label text-[14px] text-on-surface-variant bg-surface-container-highest px-xs rounded">VS</span>
+<span class="font-data-value text-[16px] text-on-surface font-bold">FRA</span>
+</div>
+</div>
+<div class="bg-surface-container/50 border border-white/5 rounded-lg p-sm flex flex-col justify-between hover:border-white/20 transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-data-label text-[12px] text-on-surface-variant">Matchday 3</span>
+<span class="font-data-label text-[12px] text-secondary">Jun 25</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-data-value text-[16px] text-on-surface font-bold">FRA</span>
+<span class="font-data-label text-[14px] text-on-surface-variant bg-surface-container-highest px-xs rounded">VS</span>
+<span class="font-data-value text-[16px] text-on-surface-variant">POL</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest w-full py-xl border-t border-white/10 mt-auto">
+<div class="max-w-container-max mx-auto px-lg grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+<div>
+<div class="font-headline-md text-headline-md text-primary mb-xs">WorldCupIQ</div>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 WorldCupIQ Analytics. Professional Grade Predictions.</p>
+</div>
+<div class="flex flex-wrap gap-md md:justify-end">
+<a class="text-on-surface-variant hover:text-on-surface font-body-md text-body-md hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-on-surface font-body-md text-body-md hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-on-surface font-body-md text-body-md hover:text-primary transition-colors" href="#">Data Methodology</a>
+<a class="text-on-surface-variant hover:text-on-surface font-body-md text-body-md hover:text-primary transition-colors" href="#">API Access</a>
+<a class="text-on-surface-variant hover:text-on-surface font-body-md text-body-md hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+</footer>
+</body></html>
